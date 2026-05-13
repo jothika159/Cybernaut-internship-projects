@@ -1,0 +1,1945 @@
+<!DOCTYPE html>
+<html lang="en" data-theme="dark">
+<head>
+<meta charset="UTF-8"/>
+<meta name="viewport" content="width=device-width,initial-scale=1.0"/>
+<title>EntertainX — Ultimate Event Hub</title>
+<link href="https://fonts.googleapis.com/css2?family=Bebas+Neue&family=Syne:wght@400;600;700;800&family=DM+Sans:wght@300;400;500;600&display=swap" rel="stylesheet"/>
+<style>
+:root{
+  --bg:#04040a;--surface:#0c0c18;--surface2:#121220;--surface3:#191928;
+  --border:#1c1c30;--border2:#252540;
+  --accent:#ff2255;--accent2:#7c3aed;--accent3:#00d4ff;--gold:#f59e0b;--green:#10b981;--orange:#f97316;
+  --text:#f0eeff;--muted:#6060888;--muted2:#9898b8;
+  --ipl-blue:#004BA0;--ipl-gold:#FFD700;--ipl-red:#C8102E;
+}
+[data-theme="light"]{
+  --bg:#f4f4ff;--surface:#fff;--surface2:#f0f0fc;--surface3:#e8e8f8;
+  --border:#ddddf0;--border2:#cccce0;--text:#080820;--muted2:#606080;
+}
+*,*::before,*::after{box-sizing:border-box;margin:0;padding:0}
+html{scroll-behavior:smooth}
+body{background:var(--bg);color:var(--text);font-family:'DM Sans',sans-serif;overflow-x:hidden}
+
+/* ── SCROLLBAR ── */
+::-webkit-scrollbar{width:6px}
+::-webkit-scrollbar-track{background:var(--bg)}
+::-webkit-scrollbar-thumb{background:var(--accent);border-radius:3px}
+
+/* ── BG ── */
+.bg-grid{position:fixed;inset:0;pointer-events:none;z-index:0;background-image:linear-gradient(rgba(124,58,237,.04)1px,transparent 1px),linear-gradient(90deg,rgba(124,58,237,.04)1px,transparent 1px);background-size:48px 48px}
+.orb{position:fixed;border-radius:50%;filter:blur(110px);pointer-events:none;z-index:0;animation:orbF ease-in-out infinite alternate}
+.o1{width:550px;height:550px;background:rgba(255,34,85,.1);top:-100px;right:-80px;animation-duration:12s}
+.o2{width:450px;height:450px;background:rgba(0,212,255,.07);bottom:10%;left:-60px;animation-duration:16s;animation-direction:alternate-reverse}
+.o3{width:300px;height:300px;background:rgba(124,58,237,.12);top:50%;left:40%;animation-duration:10s}
+@keyframes orbF{from{transform:translate(0,0)}to{transform:translate(35px,20px)}}
+
+/* ── TOAST ── */
+.toast-c{position:fixed;bottom:1.5rem;right:1.5rem;z-index:9000;display:flex;flex-direction:column;gap:.5rem;max-width:300px}
+.toast{background:var(--surface2);border:1px solid var(--border2);border-radius:12px;padding:.8rem 1.2rem;font-size:.85rem;font-weight:500;display:flex;align-items:center;gap:.6rem;animation:tIn .3s ease;box-shadow:0 8px 30px rgba(0,0,0,.3)}
+.toast.out{animation:tOut .25s ease forwards}
+@keyframes tIn{from{opacity:0;transform:translateX(50px)}to{opacity:1;transform:translateX(0)}}
+@keyframes tOut{to{opacity:0;transform:translateX(50px)}}
+
+/* ── NAV ── */
+nav{position:fixed;top:0;left:0;right:0;z-index:500;display:flex;align-items:center;justify-content:space-between;padding:1rem 2.5rem;background:rgba(4,4,10,.8);backdrop-filter:blur(20px);border-bottom:1px solid var(--border);transition:padding .3s}
+nav.sc{padding:.7rem 2.5rem}
+.logo{font-family:'Bebas Neue',sans-serif;font-size:1.9rem;letter-spacing:3px;background:linear-gradient(135deg,var(--accent),var(--accent3));-webkit-background-clip:text;-webkit-text-fill-color:transparent;cursor:pointer;flex-shrink:0}
+.nav-links{display:flex;gap:1.8rem;list-style:none}
+.nav-links a{color:var(--muted2);text-decoration:none;font-size:.85rem;font-weight:500;transition:color .2s;white-space:nowrap}
+.nav-links a:hover{color:var(--text)}
+.nav-right{display:flex;align-items:center;gap:.7rem}
+.icon-btn{background:var(--surface2);border:1px solid var(--border2);color:var(--text);width:36px;height:36px;border-radius:50%;cursor:pointer;font-size:.95rem;display:flex;align-items:center;justify-content:center;transition:all .2s;position:relative;flex-shrink:0}
+.icon-btn:hover{border-color:var(--accent);transform:scale(1.08)}
+.badge-dot{position:absolute;top:-3px;right:-3px;background:var(--accent);color:#fff;font-size:.55rem;font-weight:700;width:15px;height:15px;border-radius:50%;display:none;align-items:center;justify-content:center}
+.badge-dot.show{display:flex}
+.nav-cta{background:linear-gradient(135deg,var(--accent),#a0143c);color:#fff;border:none;padding:.55rem 1.3rem;border-radius:50px;font-family:'DM Sans',sans-serif;font-weight:600;font-size:.85rem;cursor:pointer;transition:all .2s;white-space:nowrap}
+.nav-cta:hover{transform:translateY(-2px);box-shadow:0 8px 24px rgba(255,34,85,.4)}
+.burger{display:none;background:none;border:1px solid var(--border2);color:var(--text);width:36px;height:36px;border-radius:8px;cursor:pointer;font-size:1.1rem;align-items:center;justify-content:center}
+.mob-menu{display:none;position:fixed;top:0;left:0;right:0;bottom:0;background:var(--bg);z-index:999;flex-direction:column;align-items:center;justify-content:center;gap:2rem}
+.mob-menu.open{display:flex;animation:fadeIn .3s ease}
+.mob-menu a{font-family:'Bebas Neue',sans-serif;font-size:2.5rem;letter-spacing:2px;color:var(--text);text-decoration:none;transition:color .2s}
+.mob-menu a:hover{color:var(--accent)}
+.mob-close{position:absolute;top:1.5rem;right:1.5rem;background:var(--surface2);border:1px solid var(--border2);color:var(--text);width:40px;height:40px;border-radius:50%;cursor:pointer;font-size:1.2rem;display:flex;align-items:center;justify-content:center}
+
+/* ── HERO ── */
+.hero{position:relative;z-index:1;min-height:100vh;display:flex;flex-direction:column;align-items:center;justify-content:center;text-align:center;padding:7rem 1.5rem 4rem}
+.hero-badge{display:inline-flex;align-items:center;gap:.5rem;background:rgba(255,34,85,.1);border:1px solid rgba(255,34,85,.25);color:var(--accent);padding:.4rem 1.2rem;border-radius:50px;font-size:.75rem;font-weight:700;letter-spacing:1.5px;text-transform:uppercase;margin-bottom:1.5rem;animation:fadeUp .6s ease}
+.pdot{width:7px;height:7px;background:var(--accent);border-radius:50%;animation:pd 1.5s ease infinite}
+@keyframes pd{0%,100%{opacity:1;transform:scale(1)}50%{opacity:.3;transform:scale(.6)}}
+.hero h1{font-family:'Bebas Neue',sans-serif;font-size:clamp(3.5rem,10vw,9rem);line-height:.9;letter-spacing:2px;animation:fadeUp .6s .1s ease both}
+.hero h1 .w1{display:block;color:var(--text)}
+.hero h1 .w2{display:block;background:linear-gradient(135deg,var(--accent),var(--gold),var(--accent3));-webkit-background-clip:text;-webkit-text-fill-color:transparent;background-size:200%;animation:gShift 4s ease infinite}
+@keyframes gShift{0%,100%{background-position:0%}50%{background-position:100%}}
+.hero-sub{max-width:500px;margin:1.5rem auto 0;color:var(--muted2);font-size:1rem;line-height:1.75;animation:fadeUp .6s .2s ease both}
+.search-wrap{display:flex;align-items:center;background:var(--surface);border:1.5px solid var(--border2);border-radius:60px;padding:.45rem .45rem .45rem 1.3rem;gap:.7rem;max-width:460px;width:100%;margin:2rem auto 0;animation:fadeUp .6s .3s ease both;transition:border-color .3s,box-shadow .3s}
+.search-wrap:focus-within{border-color:var(--accent);box-shadow:0 0 0 3px rgba(255,34,85,.1)}
+.search-wrap input{flex:1;background:transparent;border:none;outline:none;color:var(--text);font-family:'DM Sans',sans-serif;font-size:.92rem;min-width:0}
+.search-wrap input::placeholder{color:var(--muted2)}
+.search-btn{background:linear-gradient(135deg,var(--accent),#a0143c);color:#fff;border:none;padding:.65rem 1.4rem;border-radius:50px;font-weight:600;font-size:.83rem;cursor:pointer;white-space:nowrap;transition:all .2s}
+.search-btn:hover{transform:scale(1.04)}
+.hero-btns{display:flex;gap:.8rem;justify-content:center;flex-wrap:wrap;margin-top:1.2rem;animation:fadeUp .6s .4s ease both}
+.btn-surprise{background:linear-gradient(135deg,var(--accent2),#5b21b6);color:#fff;border:none;padding:.7rem 1.5rem;border-radius:50px;font-weight:600;font-size:.88rem;cursor:pointer;display:flex;align-items:center;gap:.5rem;transition:all .2s}
+.btn-surprise:hover{transform:translateY(-2px);box-shadow:0 10px 28px rgba(124,58,237,.4)}
+.btn-ipl-hero{background:linear-gradient(135deg,var(--ipl-blue),#0070cc);color:#fff;border:none;padding:.7rem 1.5rem;border-radius:50px;font-weight:700;font-size:.88rem;cursor:pointer;display:flex;align-items:center;gap:.5rem;transition:all .2s}
+.btn-ipl-hero:hover{transform:translateY(-2px);box-shadow:0 10px 28px rgba(0,75,160,.5)}
+.hero-stats{display:flex;gap:2.5rem;margin-top:3rem;animation:fadeUp .6s .5s ease both;flex-wrap:wrap;justify-content:center}
+.stat .num{font-family:'Bebas Neue',sans-serif;font-size:2.5rem;background:linear-gradient(135deg,var(--accent),var(--gold));-webkit-background-clip:text;-webkit-text-fill-color:transparent}
+.stat .lbl{font-size:.72rem;color:var(--muted2);letter-spacing:1.5px;text-transform:uppercase}
+
+/* ── STRIP ── */
+.strip{overflow:hidden;border-top:1px solid var(--border);border-bottom:1px solid var(--border);padding:.7rem 0;background:var(--surface)}
+.strip-track{display:flex;gap:2.5rem;white-space:nowrap;animation:scroll 28s linear infinite}
+.strip-track:hover{animation-play-state:paused}
+.strip-item{display:flex;align-items:center;gap:.5rem;font-size:.77rem;font-weight:600;color:var(--muted2);text-transform:uppercase;letter-spacing:.8px;flex-shrink:0}
+.ship{color:var(--accent)}
+@keyframes scroll{from{transform:translateX(0)}to{transform:translateX(-50%)}}
+
+/* ── SECTION ── */
+section{position:relative;z-index:1;padding:5rem 1.5rem}
+.container{max-width:1200px;margin:0 auto}
+.sec-tag{font-size:.7rem;font-weight:700;letter-spacing:2.5px;text-transform:uppercase;color:var(--accent3);margin-bottom:.6rem}
+.sec-title{font-family:'Bebas Neue',sans-serif;font-size:clamp(2.2rem,5vw,3.8rem);line-height:1;margin-bottom:.7rem}
+.sec-sub{color:var(--muted2);font-size:.9rem;line-height:1.7;max-width:440px}
+
+/* ── CATEGORY CARDS WITH IMAGES ── */
+.cat-grid{display:grid;grid-template-columns:repeat(auto-fill,minmax(200px,1fr));gap:1rem;margin-top:2rem}
+.cat-card{border-radius:20px;overflow:hidden;cursor:pointer;position:relative;height:220px;transition:transform .3s,box-shadow .3s}
+.cat-card:hover{transform:translateY(-6px) scale(1.02);box-shadow:0 20px 50px rgba(0,0,0,.5)}
+.cat-img{width:100%;height:100%;object-fit:cover;transition:transform .4s}
+.cat-card:hover .cat-img{transform:scale(1.08)}
+.cat-overlay{position:absolute;inset:0;background:linear-gradient(to top,rgba(4,4,10,.95) 0%,rgba(4,4,10,.4) 50%,transparent 100%)}
+.cat-info{position:absolute;bottom:0;left:0;right:0;padding:1.2rem}
+.cat-name{font-family:'Bebas Neue',sans-serif;font-size:1.5rem;letter-spacing:1px;color:#fff;text-shadow:0 2px 8px rgba(0,0,0,.8)}
+.cat-pill{display:inline-block;margin-top:.3rem;font-size:.68rem;font-weight:700;padding:.25rem .8rem;border-radius:50px;color:#fff}
+.cat-card.m .cat-pill{background:rgba(255,34,85,.85)}
+.cat-card.p .cat-pill{background:rgba(245,158,11,.85)}
+.cat-card.f .cat-pill{background:rgba(0,212,255,.85);color:#000}
+.cat-card.g .cat-pill{background:rgba(124,58,237,.85)}
+.cat-card.d .cat-pill{background:rgba(16,185,129,.85)}
+
+/* ── EVENT CARDS WITH IMAGES ── */
+.events-grid{display:grid;grid-template-columns:repeat(auto-fill,minmax(300px,1fr));gap:1.4rem;margin-top:1.8rem}
+.ecard{background:var(--surface);border:1px solid var(--border);border-radius:20px;overflow:hidden;transition:transform .3s,box-shadow .3s;display:flex;flex-direction:column}
+.ecard:hover{transform:translateY(-5px);box-shadow:0 20px 50px rgba(0,0,0,.4)}
+.ecard-thumb{height:180px;position:relative;overflow:hidden}
+.ecard-thumb img{width:100%;height:100%;object-fit:cover;transition:transform .4s}
+.ecard:hover .ecard-thumb img{transform:scale(1.07)}
+.ecard-thumb-overlay{position:absolute;inset:0;background:linear-gradient(to bottom,transparent 40%,rgba(12,12,24,.95))}
+.ecard-badges{position:absolute;top:.8rem;left:.8rem;display:flex;gap:.4rem;z-index:2}
+.ebadge{font-size:.65rem;font-weight:700;letter-spacing:.8px;padding:.25rem .7rem;border-radius:50px}
+.b-hot{background:var(--accent);color:#fff}
+.b-new{background:var(--green);color:#000}
+.b-trend{background:var(--gold);color:#000}
+.b-sold{background:var(--muted2);color:#fff}
+.wish-btn{position:absolute;top:.8rem;right:.8rem;z-index:2;width:32px;height:32px;background:rgba(4,4,10,.65);border:1px solid var(--border2);border-radius:50%;display:flex;align-items:center;justify-content:center;cursor:pointer;font-size:.95rem;transition:all .2s;backdrop-filter:blur(8px)}
+.wish-btn:hover{transform:scale(1.2)}
+.wish-btn.saved{background:rgba(255,34,85,.2);border-color:var(--accent)}
+.ctdown{position:absolute;bottom:.8rem;left:.8rem;z-index:2;background:rgba(4,4,10,.75);border:1px solid var(--border2);border-radius:50px;padding:.28rem .8rem;font-size:.68rem;font-weight:600;color:var(--gold);backdrop-filter:blur(8px)}
+.ebody{padding:1.3rem;flex:1;display:flex;flex-direction:column}
+.ecat{font-size:.68rem;font-weight:700;letter-spacing:1.5px;text-transform:uppercase;color:var(--accent3);margin-bottom:.35rem}
+.etitle{font-family:'Syne',sans-serif;font-weight:700;font-size:1.1rem;margin-bottom:.6rem;line-height:1.2}
+.stars-row{display:flex;align-items:center;gap:.3rem;font-size:.78rem;margin-bottom:.6rem}
+.rc{color:var(--muted2);font-size:.7rem}
+.emeta{display:flex;flex-direction:column;gap:.28rem;margin-bottom:.8rem}
+.emi{display:flex;align-items:center;gap:.45rem;font-size:.78rem;color:var(--muted2)}
+.sbar{height:3px;background:var(--border2);border-radius:2px;overflow:hidden;margin-bottom:.25rem}
+.sfill{height:100%;border-radius:2px}
+.slo{background:var(--green)}.smid{background:var(--gold)}.shi{background:var(--accent)}
+.stxt{font-size:.7rem;color:var(--muted2)}
+.efooter{display:flex;align-items:center;justify-content:space-between;margin-top:auto;padding-top:.9rem}
+.eprice{font-family:'Bebas Neue',sans-serif;font-size:1.5rem}
+.pfree{color:var(--green)}.ppaid{color:var(--gold)}
+.ebtns{display:flex;gap:.45rem}
+.btn-reg{background:var(--accent);color:#fff;border:none;padding:.5rem 1.1rem;border-radius:50px;font-weight:600;font-size:.8rem;cursor:pointer;transition:all .2s}
+.btn-reg:hover{transform:translateY(-2px);box-shadow:0 6px 18px rgba(255,34,85,.4)}
+.btn-reg:disabled{background:var(--muted2);cursor:not-allowed;transform:none;box-shadow:none}
+.btn-share-ev{background:var(--surface3);border:1px solid var(--border2);color:var(--muted2);padding:.5rem .8rem;border-radius:50px;font-size:.78rem;cursor:pointer;transition:all .2s}
+.btn-share-ev:hover{color:var(--text);border-color:var(--accent3)}
+.filter-row{display:flex;gap:.5rem;flex-wrap:wrap;margin-top:1.5rem}
+.tab{background:var(--surface);border:1px solid var(--border2);color:var(--muted2);padding:.48rem 1.1rem;border-radius:50px;font-size:.82rem;font-weight:500;cursor:pointer;transition:all .2s}
+.tab:hover,.tab.active{background:var(--accent);border-color:var(--accent);color:#fff}
+.load-wrap{text-align:center;margin-top:2rem}
+.btn-load{background:var(--surface);border:1.5px solid var(--border2);color:var(--muted2);padding:.75rem 2.2rem;border-radius:50px;font-weight:600;font-size:.88rem;cursor:pointer;transition:all .3s}
+.btn-load:hover{border-color:var(--accent);color:var(--text)}
+.skel{background:linear-gradient(90deg,var(--surface) 25%,var(--surface2) 50%,var(--surface) 75%);background-size:200%;animation:skelPulse 1.4s ease infinite;border-radius:20px}
+@keyframes skelPulse{0%{background-position:200%}100%{background-position:-200%}}
+
+/* ── IPL SECTION ── */
+.ipl-section{background:linear-gradient(180deg,var(--bg) 0%,#000820 50%,var(--bg) 100%);padding:5rem 1.5rem}
+.ipl-header{text-align:center;margin-bottom:3rem}
+.ipl-logo-strip{display:flex;align-items:center;justify-content:center;gap:1rem;margin-bottom:1.5rem;flex-wrap:wrap}
+.ipl-badge{background:linear-gradient(135deg,#004BA0,#FFD700);color:#fff;font-family:'Bebas Neue',sans-serif;font-size:1.1rem;letter-spacing:2px;padding:.5rem 1.5rem;border-radius:8px}
+.trofee{font-size:2rem}
+.ipl-title{font-family:'Bebas Neue',sans-serif;font-size:clamp(2.8rem,7vw,6rem);line-height:.9;letter-spacing:2px;background:linear-gradient(135deg,#FFD700,#fff,#FFD700);-webkit-background-clip:text;-webkit-text-fill-color:transparent;margin-bottom:.8rem}
+.ipl-sub{color:var(--muted2);font-size:.95rem;max-width:500px;margin:0 auto}
+
+/* match selector */
+.match-tabs{display:flex;gap:.7rem;justify-content:center;flex-wrap:wrap;margin-bottom:2.5rem}
+.mtab{background:var(--surface);border:1.5px solid var(--border2);border-radius:14px;padding:.9rem 1.4rem;cursor:pointer;text-align:center;transition:all .25s;min-width:160px}
+.mtab:hover{border-color:var(--ipl-gold);transform:translateY(-3px)}
+.mtab.active{background:linear-gradient(135deg,#004BA0,#0070cc);border-color:var(--ipl-gold);box-shadow:0 8px 24px rgba(0,75,160,.4)}
+.mtab .teams{font-family:'Bebas Neue',sans-serif;font-size:1.1rem;letter-spacing:1px;color:var(--text)}
+.mtab .mdate{font-size:.72rem;color:var(--muted2);margin-top:.2rem}
+.mtab .mvenue{font-size:.7rem;color:var(--accent3);margin-top:.1rem}
+
+/* Ground Blueprint */
+.ground-container{background:linear-gradient(180deg,#001428,#001e38);border:2px solid rgba(255,215,0,.2);border-radius:24px;padding:2rem;margin-bottom:2.5rem;overflow:hidden;position:relative}
+.ground-title{text-align:center;font-family:'Bebas Neue',sans-serif;font-size:1.5rem;letter-spacing:2px;color:var(--ipl-gold);margin-bottom:1.5rem}
+.ground-wrap{display:flex;gap:2rem;align-items:flex-start;flex-wrap:wrap}
+.ground-svg-wrap{flex:1;min-width:280px;display:flex;justify-content:center}
+.ground-legend{flex:1;min-width:220px}
+.legend-title{font-weight:700;font-size:.88rem;margin-bottom:1rem;color:var(--ipl-gold)}
+.legend-item{display:flex;align-items:center;gap:.8rem;margin-bottom:.7rem}
+.legend-color{width:16px;height:16px;border-radius:4px;flex-shrink:0}
+.legend-info{flex:1}
+.legend-name{font-size:.83rem;font-weight:600}
+.legend-sub{font-size:.72rem;color:var(--muted2)}
+.legend-price{font-family:'Bebas Neue',sans-serif;font-size:1rem;color:var(--gold)}
+.sel-stand-info{background:rgba(255,215,0,.08);border:1px solid rgba(255,215,0,.2);border-radius:14px;padding:1.2rem;margin-top:1.2rem}
+.ssi-title{font-weight:700;color:var(--ipl-gold);margin-bottom:.5rem;font-size:.9rem}
+.ssi-row{display:flex;justify-content:space-between;font-size:.82rem;color:var(--muted2);margin-bottom:.3rem}
+.ssi-row span:last-child{color:var(--text);font-weight:600}
+.btn-book-stand{background:linear-gradient(135deg,var(--ipl-gold),#e0a800);color:#000;border:none;width:100%;padding:.75rem;border-radius:12px;font-family:'DM Sans',sans-serif;font-weight:700;font-size:.9rem;cursor:pointer;margin-top:1rem;transition:all .2s}
+.btn-book-stand:hover{transform:scale(1.02);box-shadow:0 6px 20px rgba(255,215,0,.3)}
+
+/* SVG ground */
+.ground-svg{width:100%;max-width:380px;filter:drop-shadow(0 10px 40px rgba(0,75,160,.4))}
+.stand-seg{cursor:pointer;transition:opacity .2s,filter .2s}
+.stand-seg:hover{opacity:.85;filter:brightness(1.15)}
+.stand-seg.selected{filter:brightness(1.3) drop-shadow(0 0 8px rgba(255,215,0,.6))}
+
+/* Players */
+.players-section{margin-top:2.5rem}
+.players-title{font-family:'Bebas Neue',sans-serif;font-size:1.6rem;letter-spacing:1px;color:var(--ipl-gold);margin-bottom:1.5rem;text-align:center}
+.teams-row{display:grid;grid-template-columns:1fr 1fr;gap:2rem;margin-bottom:2rem}
+.team-block{background:rgba(255,255,255,.03);border:1px solid var(--border2);border-radius:18px;padding:1.5rem;overflow:hidden}
+.team-header{display:flex;align-items:center;gap:.8rem;margin-bottom:1.2rem;padding-bottom:1rem;border-bottom:1px solid var(--border)}
+.team-logo{width:44px;height:44px;border-radius:50%;display:flex;align-items:center;justify-content:center;font-size:1.4rem;flex-shrink:0}
+.team-name{font-family:'Bebas Neue',sans-serif;font-size:1.3rem;letter-spacing:1px}
+.team-short{font-size:.72rem;color:var(--muted2)}
+.players-grid{display:grid;grid-template-columns:repeat(auto-fill,minmax(85px,1fr));gap:.8rem}
+.player-card{background:var(--surface2);border:1px solid var(--border2);border-radius:14px;padding:.8rem .5rem;text-align:center;transition:all .25s;cursor:pointer;position:relative;overflow:hidden}
+.player-card:hover{transform:translateY(-4px);border-color:var(--ipl-gold);box-shadow:0 8px 24px rgba(255,215,0,.15)}
+.player-card.captain::after{content:'©';position:absolute;top:4px;right:6px;font-size:.6rem;font-weight:700;color:var(--ipl-gold)}
+.player-avatar{width:54px;height:54px;border-radius:50%;margin:0 auto .5rem;overflow:hidden;border:2px solid var(--border2);background:var(--surface3);display:flex;align-items:center;justify-content:center;font-size:1.6rem}
+.player-avatar img{width:100%;height:100%;object-fit:cover}
+.player-name{font-size:.68rem;font-weight:700;line-height:1.2;margin-bottom:.2rem}
+.player-role{font-size:.6rem;color:var(--muted2)}
+.player-role-badge{display:inline-block;font-size:.55rem;font-weight:700;padding:.15rem .5rem;border-radius:50px;margin-top:.3rem}
+.rb-bat{background:rgba(16,185,129,.2);color:var(--green)}
+.rb-bowl{background:rgba(255,34,85,.2);color:var(--accent)}
+.rb-all{background:rgba(245,158,11,.2);color:var(--gold)}
+.rb-wk{background:rgba(0,212,255,.2);color:var(--accent3)}
+
+/* Seat summary */
+.ticket-summary{background:linear-gradient(135deg,#001e38,#002850);border:1px solid rgba(255,215,0,.25);border-radius:20px;padding:2rem;margin-top:2rem}
+.ts-title{font-family:'Bebas Neue',sans-serif;font-size:1.5rem;letter-spacing:1px;color:var(--ipl-gold);margin-bottom:1.2rem;text-align:center}
+.ts-grid{display:grid;grid-template-columns:1fr 1fr;gap:1rem;margin-bottom:1.5rem}
+.ts-item{background:rgba(255,255,255,.04);border:1px solid rgba(255,215,0,.1);border-radius:12px;padding:1rem}
+.ts-label{font-size:.7rem;font-weight:700;letter-spacing:1px;text-transform:uppercase;color:var(--muted2);margin-bottom:.3rem}
+.ts-value{font-weight:700;font-size:.95rem}
+.ts-total{display:flex;justify-content:space-between;align-items:center;background:rgba(255,215,0,.08);border:1px solid rgba(255,215,0,.2);border-radius:12px;padding:1rem 1.2rem;margin-bottom:1.2rem}
+.ts-total-label{font-weight:700}
+.ts-total-price{font-family:'Bebas Neue',sans-serif;font-size:2rem;color:var(--ipl-gold)}
+.qty-ctrl{display:flex;align-items:center;gap:.8rem;background:var(--surface2);border:1px solid var(--border2);border-radius:12px;padding:.6rem 1rem}
+.qty-btn{background:var(--surface3);border:1px solid var(--border2);color:var(--text);width:28px;height:28px;border-radius:50%;cursor:pointer;font-size:1rem;display:flex;align-items:center;justify-content:center;transition:all .2s}
+.qty-btn:hover{border-color:var(--ipl-gold);color:var(--ipl-gold)}
+.btn-book-ipl{background:linear-gradient(135deg,var(--ipl-gold),#e0a800);color:#000;border:none;width:100%;padding:1rem;border-radius:14px;font-family:'DM Sans',sans-serif;font-weight:700;font-size:1rem;cursor:pointer;transition:all .2s;display:flex;align-items:center;justify-content:center;gap:.6rem}
+.btn-book-ipl:hover{transform:translateY(-2px);box-shadow:0 10px 28px rgba(255,215,0,.35)}
+
+/* ── ARTISTS ── */
+.artists-row{display:flex;gap:1rem;overflow-x:auto;padding-bottom:1rem;margin-top:1.5rem;scrollbar-width:none}
+.artists-row::-webkit-scrollbar{display:none}
+.artist-card{background:var(--surface);border:1px solid var(--border);border-radius:16px;padding:1.2rem;min-width:160px;text-align:center;flex-shrink:0;transition:all .3s;cursor:pointer}
+.artist-card:hover{transform:translateY(-4px);border-color:var(--accent2)}
+.a-ava{width:58px;height:58px;border-radius:50%;margin:0 auto .7rem;overflow:hidden;border:2px solid var(--border2);background:var(--surface2);display:flex;align-items:center;justify-content:center;font-size:1.8rem}
+.a-ava img{width:100%;height:100%;object-fit:cover}
+.a-name{font-weight:700;font-size:.9rem;margin-bottom:.15rem}
+.a-role{font-size:.72rem;color:var(--muted2)}
+
+/* ── GALLERY ── */
+.gallery-grid{display:grid;grid-template-columns:repeat(auto-fill,minmax(180px,1fr));gap:.7rem;margin-top:1.5rem}
+.gitem{border-radius:14px;overflow:hidden;aspect-ratio:1;cursor:pointer;position:relative}
+.gitem img{width:100%;height:100%;object-fit:cover;transition:transform .4s}
+.gitem:hover img{transform:scale(1.08)}
+.gitem-overlay{position:absolute;inset:0;background:rgba(4,4,10,.5);opacity:0;transition:opacity .3s;display:flex;align-items:center;justify-content:center;font-size:1.5rem}
+.gitem:hover .gitem-overlay{opacity:1}
+
+/* ── REVIEWS ── */
+.reviews-wrap{display:grid;grid-template-columns:repeat(auto-fill,minmax(280px,1fr));gap:1rem;margin-top:1.5rem}
+.rv{background:var(--surface);border:1px solid var(--border);border-radius:16px;padding:1.2rem;transition:transform .2s}
+.rv:hover{transform:translateY(-3px)}
+.rv-head{display:flex;align-items:center;justify-content:space-between;margin-bottom:.6rem}
+.rv-name{font-weight:700;font-size:.88rem}
+.rv-date{font-size:.7rem;color:var(--muted2)}
+.rv-stars{font-size:.8rem;margin-bottom:.4rem}
+.rv-text{font-size:.82rem;color:var(--muted2);line-height:1.6}
+
+/* ── NOTIFY ── */
+.notify-box{background:var(--surface);border:1px solid var(--border2);border-radius:20px;padding:2.5rem;text-align:center;max-width:480px;margin:1.5rem auto 0}
+.notify-box h3{font-family:'Bebas Neue',sans-serif;font-size:2rem;margin-bottom:.4rem}
+.notify-box p{color:var(--muted2);font-size:.88rem;margin-bottom:1.3rem}
+.notify-form{display:flex;gap:.6rem;flex-wrap:wrap;justify-content:center}
+.notify-form input{background:var(--surface2);border:1.5px solid var(--border2);color:var(--text);padding:.75rem 1.1rem;border-radius:50px;font-family:'DM Sans',sans-serif;font-size:.88rem;flex:1;min-width:190px;outline:none;transition:border-color .2s}
+.notify-form input:focus{border-color:var(--accent3)}
+.notify-form button{background:linear-gradient(135deg,var(--accent3),#008fa0);color:#000;border:none;padding:.75rem 1.5rem;border-radius:50px;font-weight:700;font-size:.88rem;cursor:pointer;white-space:nowrap;transition:all .2s}
+.notify-form button:hover{transform:scale(1.04)}
+
+/* ── WISHLIST PANEL ── */
+.wpanel{position:fixed;top:0;right:-420px;width:380px;max-width:95vw;height:100vh;background:var(--surface);border-left:1px solid var(--border2);z-index:700;transition:right .4s cubic-bezier(.34,1.56,.64,1);padding:1.8rem 1.4rem;overflow-y:auto}
+.wpanel.open{right:0}
+.wpanel-head{display:flex;justify-content:space-between;align-items:center;margin-bottom:1.3rem}
+.wpanel-title{font-family:'Bebas Neue',sans-serif;font-size:1.7rem}
+.wpanel-x{background:var(--surface2);border:1px solid var(--border2);color:var(--muted2);width:32px;height:32px;border-radius:50%;cursor:pointer;display:flex;align-items:center;justify-content:center;transition:all .2s}
+.wpanel-x:hover{border-color:var(--accent);color:var(--accent)}
+.witem{background:var(--surface2);border:1px solid var(--border2);border-radius:12px;padding:.9rem;display:flex;align-items:center;gap:.8rem;margin-bottom:.7rem}
+.witem img{width:48px;height:48px;border-radius:10px;object-fit:cover;flex-shrink:0}
+.witem-emoji{width:48px;height:48px;border-radius:10px;background:var(--surface3);display:flex;align-items:center;justify-content:center;font-size:1.5rem;flex-shrink:0}
+.witem-info{flex:1;min-width:0}
+.witem-name{font-weight:700;font-size:.85rem;white-space:nowrap;overflow:hidden;text-overflow:ellipsis}
+.witem-meta{font-size:.72rem;color:var(--muted2)}
+.witem-x{background:none;border:none;color:var(--muted2);cursor:pointer;font-size:.95rem;transition:color .2s;flex-shrink:0}
+.witem-x:hover{color:var(--accent)}
+.w-empty{text-align:center;color:var(--muted2);margin-top:3rem}
+.we-ico{font-size:2.5rem;display:block;margin-bottom:.8rem}
+
+/* ── MODAL ── */
+.overlay{position:fixed;inset:0;z-index:800;background:rgba(4,4,10,.9);backdrop-filter:blur(14px);display:none;align-items:center;justify-content:center;padding:1rem}
+.overlay.open{display:flex;animation:fadeIn .25s ease}
+@keyframes fadeIn{from{opacity:0}to{opacity:1}}
+@keyframes fadeUp{from{opacity:0;transform:translateY(20px)}to{opacity:1;transform:translateY(0)}}
+.modal{background:var(--surface);border:1px solid var(--border2);border-radius:24px;width:100%;max-width:560px;max-height:92vh;overflow-y:auto;animation:mUp .35s cubic-bezier(.34,1.56,.64,1)}
+@keyframes mUp{from{opacity:0;transform:translateY(35px) scale(.97)}to{opacity:1;transform:translateY(0) scale(1)}}
+.mhead{padding:1.8rem 1.8rem 1.4rem;border-bottom:1px solid var(--border);display:flex;justify-content:space-between;align-items:flex-start;position:sticky;top:0;background:var(--surface);z-index:2;border-radius:24px 24px 0 0}
+.mtitle{font-family:'Syne',sans-serif;font-weight:800;font-size:1.5rem}
+.msub{font-size:.8rem;color:var(--muted2);margin-top:.2rem}
+.mx{background:var(--surface2);border:1px solid var(--border2);color:var(--muted2);width:34px;height:34px;border-radius:50%;cursor:pointer;display:flex;align-items:center;justify-content:center;transition:all .2s;flex-shrink:0}
+.mx:hover{border-color:var(--accent);color:var(--accent);transform:rotate(90deg)}
+/* steps */
+.msteps{display:flex;align-items:center;padding:1.1rem 1.8rem;border-bottom:1px solid var(--border)}
+.msi{display:flex;align-items:center;gap:.45rem;flex:1}
+.msn{width:24px;height:24px;border-radius:50%;border:2px solid var(--border2);color:var(--muted2);font-size:.72rem;font-weight:700;display:flex;align-items:center;justify-content:center;transition:all .3s;flex-shrink:0}
+.msl{font-size:.72rem;font-weight:600;color:var(--muted2)}
+.msi.active .msn{border-color:var(--accent);color:var(--accent);background:rgba(255,34,85,.1)}
+.msi.active .msl{color:var(--text)}
+.msi.done .msn{border-color:var(--green);color:var(--green);background:rgba(16,185,129,.1)}
+.msi.done .msl{color:var(--green)}
+.msdiv{flex:1;height:1px;background:var(--border);margin:0 .35rem}
+/* form */
+.mbody{padding:1.8rem}
+.mfs{display:none}
+.mfs.active{display:block;animation:fadeUp .3s ease}
+.fg{margin-bottom:1rem}
+.fl{font-size:.75rem;font-weight:600;color:var(--muted2);margin-bottom:.4rem;display:block}
+.fi,.fsel,.fta{width:100%;background:var(--surface2);border:1.5px solid var(--border2);color:var(--text);padding:.75rem .95rem;border-radius:11px;font-family:'DM Sans',sans-serif;font-size:.9rem;transition:border-color .2s,box-shadow .2s;outline:none}
+.fi:focus,.fsel:focus,.fta:focus{border-color:var(--accent);box-shadow:0 0 0 3px rgba(255,34,85,.1)}
+.fi.err{border-color:var(--accent)}
+.fsel option{background:var(--surface2)}
+.fta{min-height:80px;resize:vertical}
+.em-err{color:var(--accent);font-size:.72rem;margin-top:.25rem;display:none}
+.em-err.show{display:block}
+.frow{display:grid;grid-template-columns:1fr 1fr;gap:.9rem}
+.t-opts{display:flex;flex-direction:column;gap:.7rem;margin-bottom:.9rem}
+.t-opt{background:var(--surface2);border:1.5px solid var(--border2);border-radius:12px;padding:.9rem 1.1rem;cursor:pointer;display:flex;align-items:center;justify-content:space-between;transition:all .2s}
+.t-opt:hover{border-color:var(--accent3)}
+.t-opt.sel{border-color:var(--accent);background:rgba(255,34,85,.05)}
+.t-opt input[type=radio]{display:none}
+.ttype{font-weight:700;font-size:.88rem}
+.tdesc{font-size:.75rem;color:var(--muted2);margin-top:.12rem}
+.tpx{font-family:'Bebas Neue',sans-serif;color:var(--gold);font-size:1.1rem}
+.sum-box{background:var(--surface2);border:1px solid var(--border2);border-radius:12px;padding:1.2rem;margin-bottom:1.1rem}
+.sum-ename{font-family:'Syne',sans-serif;font-weight:700;font-size:1.05rem;margin-bottom:.5rem}
+.srow{display:flex;justify-content:space-between;font-size:.8rem;color:var(--muted2);margin-bottom:.3rem}
+.srow.tot{color:var(--text);font-weight:700;font-size:.95rem;border-top:1px solid var(--border);padding-top:.5rem;margin-top:.3rem}
+.stprice{color:var(--gold);font-family:'Bebas Neue',sans-serif;font-size:1.2rem}
+.promo-row{display:flex;gap:.6rem;margin-bottom:1.1rem}
+.promo-row .fi{margin:0}
+.btn-promo{background:var(--surface2);border:1.5px solid var(--border2);color:var(--text);padding:.75rem 1.1rem;border-radius:11px;font-weight:600;font-size:.8rem;cursor:pointer;white-space:nowrap;transition:all .2s}
+.btn-promo:hover{border-color:var(--accent3)}
+.pirow{display:flex;gap:.45rem;flex-wrap:wrap;margin-bottom:1rem}
+.pi{background:var(--surface2);border:1px solid var(--border2);padding:.35rem .85rem;border-radius:8px;font-size:.73rem;font-weight:600;color:var(--muted2);cursor:pointer;transition:all .2s}
+.pi:hover,.pi.sel{border-color:var(--accent);color:var(--text)}
+.mfoot{padding:1.3rem 1.8rem;border-top:1px solid var(--border);display:flex;justify-content:space-between;align-items:center;gap:.8rem;position:sticky;bottom:0;background:var(--surface)}
+.btn-back{background:transparent;border:1.5px solid var(--border2);color:var(--muted2);padding:.6rem 1.4rem;border-radius:50px;font-weight:600;font-size:.85rem;cursor:pointer;transition:all .2s}
+.btn-back:hover{border-color:var(--text);color:var(--text)}
+.btn-next{background:linear-gradient(135deg,var(--accent),#a0143c);color:#fff;border:none;padding:.6rem 1.8rem;border-radius:50px;font-weight:700;font-size:.88rem;cursor:pointer;transition:all .2s}
+.btn-next:hover{transform:translateY(-2px);box-shadow:0 8px 22px rgba(255,34,85,.4)}
+/* success */
+.success{padding:2.5rem 2rem;text-align:center;display:none}
+.success.show{display:block;animation:fadeUp .4s ease}
+.s-ico{font-size:4rem;animation:pop .5s ease}
+@keyframes pop{from{transform:scale(0) rotate(-30deg)}to{transform:scale(1) rotate(0)}}
+.s-title{font-family:'Bebas Neue',sans-serif;font-size:2rem;margin:.7rem 0 .4rem}
+.s-sub{color:var(--muted2);font-size:.88rem;line-height:1.7;margin-bottom:1.8rem;max-width:360px;margin-left:auto;margin-right:auto}
+.qr-box{width:130px;height:130px;background:var(--surface2);border:1px solid var(--border2);border-radius:16px;margin:0 auto 1.1rem;display:flex;align-items:center;justify-content:center;font-size:3rem;animation:pop .5s .2s ease both}
+.tid{font-family:'Bebas Neue',sans-serif;letter-spacing:4px;color:var(--accent);font-size:1.4rem}
+.tid-lbl{font-size:.7rem;color:var(--muted2);margin-bottom:1.5rem}
+.s-acts{display:flex;gap:.6rem;justify-content:center;flex-wrap:wrap}
+.btn-cal{background:var(--surface2);border:1.5px solid var(--border2);color:var(--text);padding:.6rem 1.2rem;border-radius:50px;font-weight:600;font-size:.82rem;cursor:pointer;transition:all .2s}
+.btn-cal:hover{border-color:var(--green);color:var(--green)}
+.btn-sh{background:var(--surface2);border:1.5px solid var(--border2);color:var(--text);padding:.6rem 1.2rem;border-radius:50px;font-weight:600;font-size:.82rem;cursor:pointer;transition:all .2s}
+.btn-sh:hover{border-color:var(--accent3);color:var(--accent3)}
+
+/* ── LIGHTBOX ── */
+.lightbox{position:fixed;inset:0;z-index:900;background:rgba(4,4,10,.95);display:none;align-items:center;justify-content:center}
+.lightbox.open{display:flex;animation:fadeIn .2s ease}
+.lb-img{max-width:90vw;max-height:80vh;border-radius:16px;object-fit:contain;animation:pop .3s ease}
+.lb-close{position:absolute;top:1.5rem;right:1.5rem;background:var(--surface2);border:1px solid var(--border2);color:var(--text);width:40px;height:40px;border-radius:50%;cursor:pointer;font-size:1.2rem;display:flex;align-items:center;justify-content:center}
+
+/* confetti */
+.cp{position:fixed;top:-20px;pointer-events:none;z-index:9990;animation:cfF linear forwards}
+@keyframes cfF{to{transform:translateY(110vh) rotate(720deg);opacity:0}}
+
+/* reveal */
+.reveal{opacity:0;transform:translateY(25px);transition:opacity .6s ease,transform .6s ease}
+.reveal.vis{opacity:1;transform:translateY(0)}
+
+/* footer */
+footer{position:relative;z-index:1;border-top:1px solid var(--border);padding:3rem 1.5rem 2rem;text-align:center}
+.footer-logo{font-family:'Bebas Neue',sans-serif;font-size:2rem;letter-spacing:3px;background:linear-gradient(135deg,var(--accent),var(--accent3));-webkit-background-clip:text;-webkit-text-fill-color:transparent;margin-bottom:.4rem}
+footer p{color:var(--muted2);font-size:.8rem}
+
+/* ── RESPONSIVE ── */
+@media(max-width:900px){
+  .teams-row{grid-template-columns:1fr}
+  .ts-grid{grid-template-columns:1fr}
+  .ground-wrap{flex-direction:column;align-items:center}
+  .ground-legend{width:100%}
+}
+@media(max-width:700px){
+  nav{padding:.9rem 1.2rem}
+  .nav-links{display:none}
+  .burger{display:flex}
+  .nav-cta{display:none}
+  .hero h1{font-size:3.2rem}
+  .hero-stats{gap:1.5rem}
+  .frow{grid-template-columns:1fr}
+  .modal{border-radius:20px 20px 0 0;margin-top:auto;max-height:95vh}
+  .overlay{align-items:flex-end;padding:0}
+  .wpanel{width:100vw}
+  .match-tabs{gap:.5rem}
+  .mtab{min-width:130px;padding:.7rem 1rem}
+  .cat-grid{grid-template-columns:repeat(auto-fill,minmax(160px,1fr))}
+  .events-grid{grid-template-columns:1fr}
+  .players-grid{grid-template-columns:repeat(auto-fill,minmax(75px,1fr))}
+  .gallery-grid{grid-template-columns:repeat(auto-fill,minmax(140px,1fr))}
+  .reviews-wrap{grid-template-columns:1fr}
+  .ts-grid{grid-template-columns:1fr 1fr}
+}
+@media(max-width:400px){
+  .hero h1{font-size:2.6rem}
+  .match-tabs{flex-direction:column;align-items:center}
+  .mtab{width:100%}
+}
+
+/* ── PROFILE PANEL ── */
+.pro-overlay{position:fixed;inset:0;z-index:800;background:rgba(4,4,12,.92);backdrop-filter:blur(14px);display:none;align-items:flex-start;justify-content:flex-end;padding:1rem}
+.pro-overlay.on{display:flex;animation:fadeIn .25s ease}
+.pp{background:var(--surface);border:1px solid var(--border2);border-radius:20px;width:100%;max-width:460px;max-height:calc(100vh - 2rem);overflow-y:auto;animation:slideR .35s cubic-bezier(.34,1.56,.64,1)}
+@keyframes slideR{from{opacity:0;transform:translateX(40px)}to{opacity:1;transform:translateX(0)}}
+.pp-head{padding:1.8rem 1.8rem 0;display:flex;justify-content:space-between;align-items:flex-start;margin-bottom:1.4rem}
+.pp-left{display:flex;flex-direction:column}
+.pp-avatar{width:70px;height:70px;border-radius:50%;background:linear-gradient(135deg,var(--accent),var(--accent2));display:flex;align-items:center;justify-content:center;font-size:2rem;margin-bottom:.8rem;position:relative;border:3px solid var(--border2)}
+.pp-level{position:absolute;bottom:-4px;right:-4px;background:var(--gold);color:#000;font-size:.55rem;font-weight:700;padding:.15rem .42rem;border-radius:50px}
+.pp-name{font-family:'Syne',sans-serif;font-weight:800;font-size:1.3rem}
+.pp-email{font-size:.76rem;color:var(--muted);margin-top:.15rem}
+.pp-close{background:var(--surface2);border:1px solid var(--border2);color:var(--muted);width:34px;height:34px;border-radius:50%;cursor:pointer;display:flex;align-items:center;justify-content:center;transition:all .2s;flex-shrink:0}
+.pp-close:hover{border-color:var(--accent);color:var(--accent)}
+.pp-body{padding:0 1.8rem 2rem}
+
+/* XP BAR */
+.xp-section{background:var(--surface2);border:1px solid var(--border2);border-radius:14px;padding:1.2rem;margin-bottom:1.2rem}
+.xp-top{display:flex;justify-content:space-between;align-items:center;margin-bottom:.6rem}
+.xp-label{font-size:.78rem;font-weight:600}
+.xp-pts{font-family:'Bebas Neue',sans-serif;font-size:1.1rem;color:var(--gold)}
+.xp-bar{height:8px;background:var(--border2);border-radius:4px;overflow:hidden}
+.xp-fill{height:100%;background:linear-gradient(135deg,var(--accent),var(--gold));border-radius:4px;transition:width .8s ease}
+.xp-next{font-size:.7rem;color:var(--muted);margin-top:.4rem}
+
+/* PROFILE STATS */
+.pstats{display:grid;grid-template-columns:repeat(3,1fr);gap:.7rem;margin-bottom:1.2rem}
+.pstat{background:var(--surface2);border:1px solid var(--border2);border-radius:12px;padding:.9rem;text-align:center}
+.pstat-num{font-family:'Bebas Neue',sans-serif;font-size:1.6rem;color:var(--accent)}
+.pstat-lbl{font-size:.67rem;color:var(--muted);letter-spacing:.5px;text-transform:uppercase}
+
+/* SECTION LABEL */
+.sec-lbl{font-weight:700;font-size:.8rem;margin-bottom:.75rem;color:var(--muted);letter-spacing:.5px;text-transform:uppercase}
+
+/* ACHIEVEMENT BADGES */
+.bdgs-row{display:flex;gap:.5rem;flex-wrap:wrap;margin-bottom:1.2rem}
+.bdg-item{background:var(--surface2);border:1px solid var(--border2);border-radius:10px;padding:.45rem .8rem;display:flex;align-items:center;gap:.4rem;font-size:.73rem;font-weight:600;cursor:default;transition:all .2s}
+.bdg-item:hover{border-color:var(--gold);transform:translateY(-2px)}
+
+/* REGISTERED EVENTS LIST */
+.reg-list{margin-bottom:1.2rem}
+.reg-item{background:var(--surface2);border:1px solid var(--border2);border-radius:12px;padding:.9rem;display:flex;align-items:center;gap:.85rem;margin-bottom:.65rem;transition:all .2s}
+.reg-item:hover{border-color:var(--accent)}
+.reg-img{width:46px;height:46px;border-radius:9px;object-fit:cover;flex-shrink:0;background:var(--surface3)}
+.reg-img-fallback{width:46px;height:46px;border-radius:9px;background:var(--surface3);display:flex;align-items:center;justify-content:center;font-size:1.4rem;flex-shrink:0}
+.reg-info{flex:1;min-width:0}
+.reg-name{font-weight:700;font-size:.84rem;white-space:nowrap;overflow:hidden;text-overflow:ellipsis}
+.reg-meta{font-size:.7rem;color:var(--muted);margin-top:.1rem}
+.reg-tid{font-size:.62rem;color:var(--accent);margin-top:.08rem;font-family:'Bebas Neue',sans-serif;letter-spacing:1px}
+.reg-status{font-size:.62rem;font-weight:700;padding:.2rem .6rem;border-radius:50px;flex-shrink:0}
+.st-upcoming{background:rgba(16,185,129,.15);color:#10b981}
+.st-attended{background:rgba(96,96,136,.15);color:var(--muted)}
+
+/* QUICK ACTIONS GRID */
+.quick-acts{display:grid;grid-template-columns:1fr 1fr;gap:.7rem;margin-bottom:1.2rem}
+.qa-card{background:var(--surface2);border:1px solid var(--border2);border-radius:12px;padding:.9rem;display:flex;align-items:center;gap:.65rem;cursor:pointer;transition:all .2s}
+.qa-card:hover{border-color:var(--accent);transform:translateY(-2px)}
+.qa-icon{font-size:1.4rem;flex-shrink:0}
+.qa-label{font-size:.78rem;font-weight:700}
+.qa-sub{font-size:.64rem;color:var(--muted);margin-top:.08rem}
+
+/* ACTIVITY LOG */
+.act-log{font-size:.78rem;color:var(--muted);line-height:2}
+
+/* IPL TICKET CARD */
+.ipl-ticket-card{background:linear-gradient(135deg,#001828,#003060);border:1px solid rgba(255,215,0,.25);border-radius:14px;padding:1rem;margin-bottom:.65rem;display:flex;align-items:center;gap:.85rem}
+.ipl-ticket-logo{width:46px;height:46px;border-radius:50%;background:var(--iblue, #004BA0);display:flex;align-items:center;justify-content:center;font-size:1.4rem;flex-shrink:0;border:2px solid rgba(255,215,0,.3)}
+.ipl-ticket-info{flex:1;min-width:0}
+.ipl-ticket-match{font-weight:700;font-size:.84rem;color:#FFD700}
+.ipl-ticket-meta{font-size:.7rem;color:var(--muted);margin-top:.1rem}
+.ipl-ticket-id{font-size:.62rem;color:#FFD700;margin-top:.08rem;font-family:'Bebas Neue',sans-serif;letter-spacing:1px}
+
+/* ── CUSTOM CURSOR ── */
+* { cursor: none !important; }
+.cursor {
+  position: fixed;
+  width: 12px;
+  height: 12px;
+  background: var(--accent);
+  border-radius: 50%;
+  pointer-events: none;
+  z-index: 99999;
+  transform: translate(-50%, -50%);
+  transition: width .2s, height .2s, background .2s, opacity .2s;
+  mix-blend-mode: difference;
+}
+.cursor-ring {
+  position: fixed;
+  width: 38px;
+  height: 38px;
+  border: 2px solid var(--accent);
+  border-radius: 50%;
+  pointer-events: none;
+  z-index: 99998;
+  transform: translate(-50%, -50%);
+  transition: all .12s ease;
+  opacity: .6;
+}
+.cursor.hover {
+  width: 22px;
+  height: 22px;
+  background: var(--accent3);
+}
+.cursor-ring.hover {
+  width: 55px;
+  height: 55px;
+  border-color: var(--accent3);
+  opacity: .4;
+}
+.cursor.click {
+  width: 8px;
+  height: 8px;
+  background: var(--gold);
+}
+.cursor-ring.click {
+  width: 28px;
+  height: 28px;
+  border-color: var(--gold);
+}
+</style>
+</head>
+<body>
+  <!-- CUSTOM CURSOR -->
+<div class="cursor" id="cursor"></div>
+<div class="cursor-ring" id="cursorRing"></div>
+<div class="bg-grid"></div>
+<div class="orb o1"></div><div class="orb o2"></div><div class="orb o3"></div>
+<div class="toast-c" id="toastC"></div>
+
+<!-- WISHLIST PANEL -->
+<div class="wpanel" id="wPanel">
+  <div class="wpanel-head">
+    <div class="wpanel-title">❤️ Wishlist</div>
+    <button class="wpanel-x" onclick="toggleWishlist()">✕</button>
+  </div>
+  <div id="wContent"><div class="w-empty"><span class="we-ico">🎟️</span>No saved events yet.<br>Tap ♡ to save events.</div></div>
+</div>
+
+<!-- MOBILE MENU -->
+<div class="mob-menu" id="mobMenu">
+  <button class="mob-close" onclick="closeMobMenu()">✕</button>
+  <a href="#categories" onclick="closeMobMenu()">Categories</a>
+  <a href="#events" onclick="closeMobMenu()">Events</a>
+  <a href="#ipl" onclick="closeMobMenu()">IPL Tickets</a>
+  <a href="#artists" onclick="closeMobMenu()">Artists</a>
+  <a href="#gallery" onclick="closeMobMenu()">Gallery</a>
+  <a href="#notify" onclick="closeMobMenu()">Notify Me</a>
+</div>
+
+<!-- NAV -->
+<nav id="nav">
+  <div class="logo" onclick="scrollTo(0,0)">EntertainX</div>
+  <ul class="nav-links">
+    <li><a href="#categories">Categories</a></li>
+    <li><a href="#events">Events</a></li>
+    <li><a href="#ipl">🏏 IPL Tickets</a></li>
+    <li><a href="#artists">Artists</a></li>
+    <li><a href="#gallery">Gallery</a></li>
+    <li><a href="#notify">Notify Me</a></li>
+  </ul>
+  <div class="nav-right">
+    <button class="icon-btn" onclick="toggleTheme()" id="themeBtn" title="Toggle theme">🌙</button>
+    <button class="icon-btn" onclick="toggleWishlist()" title="Wishlist">♡<span class="badge-dot" id="wBadge">0</span></button>
+    <button class="nav-cta" onclick="document.getElementById('events').scrollIntoView({behavior:'smooth'})">Browse Events</button>
+    <button class="icon-btn" onclick="openProfile()" title="My Profile">👤</button>
+    <button class="burger" onclick="document.getElementById('mobMenu').classList.add('open')">☰</button>
+  </div>
+</nav>
+
+<!-- HERO -->
+<section class="hero">
+  <div class="hero-badge"><div class="pdot"></div>Live Entertainment Platform</div>
+  <h1><span class="w1">ENTERTAINMENT</span><span class="w2">REDEFINED</span></h1>
+  <p class="hero-sub">Discover and register for the most electrifying entertainment events — music, gaming, dance, film, IPL & more.</p>
+  <div class="search-wrap">
+    <span>🔍</span>
+    <input type="text" id="searchInp" placeholder="Search events, artists, venues..." oninput="handleSearch(this.value)"/>
+    <button class="search-btn" onclick="handleSearch(document.getElementById('searchInp').value)">Search</button>
+  </div>
+  <div class="hero-btns">
+    <button class="btn-surprise" onclick="surpriseMe()">🎲 Surprise Me!</button>
+    <button class="btn-ipl-hero" onclick="document.getElementById('ipl').scrollIntoView({behavior:'smooth'})">🏏 Book IPL Tickets</button>
+  </div>
+  <div class="hero-stats">
+    <div class="stat"><div class="num" data-t="120">0</div><div class="lbl">Events</div></div>
+    <div class="stat"><div class="num" data-t="50">0</div><div class="lbl">Artists</div></div>
+    <div class="stat"><div class="num" data-t="5">0</div><div class="lbl">Categories</div></div>
+    <div class="stat"><div class="num" data-t="100">0</div><div class="lbl">K+ Fans</div></div>
+  </div>
+</section>
+
+<!-- STRIP -->
+<div class="strip"><div class="strip-track" id="stripTrack"></div></div>
+
+<!-- CATEGORIES -->
+<section id="categories"><div class="container reveal">
+  <div class="sec-tag">Explore by Category</div>
+  <h2 class="sec-title">What's Your Vibe?</h2>
+  <p class="sec-sub">Five categories, endless thrills. Click to explore.</p>
+  <div class="cat-grid">
+    <div class="cat-card m" onclick="filterEvents('Music',null)">
+      <img class="cat-img" src="https://images.unsplash.com/photo-1470229722913-7c0e2dbbafd3?w=400&q=80" alt="Music"/>
+      <div class="cat-overlay"></div>
+      <div class="cat-info"><div class="cat-name">Music</div><span class="cat-pill">4 Events</span></div>
+    </div>
+    <div class="cat-card p" onclick="filterEvents('Performance',null)">
+      <img class="cat-img" src="https://images.unsplash.com/photo-1503095396549-807759245b35?w=400&q=80" alt="Performance"/>
+      <div class="cat-overlay"></div>
+      <div class="cat-info"><div class="cat-name">Performance</div><span class="cat-pill">4 Events</span></div>
+    </div>
+    <div class="cat-card f" onclick="filterEvents('Film',null)">
+      <img class="cat-img" src="https://images.unsplash.com/photo-1489599849927-2ee91cede3ba?w=400&q=80" alt="Film"/>
+      <div class="cat-overlay"></div>
+      <div class="cat-info"><div class="cat-name">Film & Media</div><span class="cat-pill">4 Events</span></div>
+    </div>
+    <div class="cat-card g" onclick="filterEvents('Gaming',null)">
+      <img class="cat-img" src="https://images.unsplash.com/photo-1542751371-adc38448a05e?w=400&q=80" alt="Gaming"/>
+      <div class="cat-overlay"></div>
+      <div class="cat-info"><div class="cat-name">Gaming</div><span class="cat-pill">4 Events</span></div>
+    </div>
+    <div class="cat-card d" onclick="filterEvents('Dance',null)">
+      <img class="cat-img" src="https://images.unsplash.com/photo-1518834107812-67b0b7c58434?w=400&q=80" alt="Dance"/>
+      <div class="cat-overlay"></div>
+      <div class="cat-info"><div class="cat-name">Dance</div><span class="cat-pill">4 Events</span></div>
+    </div>
+  </div>
+</div></section>
+
+<!-- EVENTS -->
+<section id="events"><div class="container">
+  <div class="reveal">
+    <div class="sec-tag">Upcoming Events</div>
+    <h2 class="sec-title">All Events</h2>
+    <p class="sec-sub">Register before seats run out!</p>
+  </div>
+  <div class="filter-row">
+    <button class="tab active" onclick="filterEvents('All',this)">All</button>
+    <button class="tab" onclick="filterEvents('Music',this)">🎵 Music</button>
+    <button class="tab" onclick="filterEvents('Performance',this)">🎭 Performance</button>
+    <button class="tab" onclick="filterEvents('Film',this)">🎬 Film</button>
+    <button class="tab" onclick="filterEvents('Gaming',this)">🕹️ Gaming</button>
+    <button class="tab" onclick="filterEvents('Dance',this)">💃 Dance</button>
+  </div>
+  <div class="events-grid" id="skelGrid" style="display:none"></div>
+  <div class="events-grid" id="evGrid"></div>
+  <div class="load-wrap" id="loadWrap" style="display:none">
+    <button class="btn-load" onclick="loadMore()">Load More Events ↓</button>
+  </div>
+</div></section>
+
+<!-- ── IPL SECTION ── -->
+<section class="ipl-section" id="ipl"><div class="container">
+  <div class="ipl-header reveal">
+    <div class="ipl-logo-strip">
+      <span class="trofee">🏆</span>
+      <div class="ipl-badge">IPL 2026</div>
+      <span class="trofee">🏏</span>
+    </div>
+    <div class="ipl-title">BOOK IPL<br>MATCH TICKETS</div>
+    <p class="ipl-sub">Select your match, choose your stand and secure your seat at the most exciting cricket league on the planet!</p>
+  </div>
+
+  <!-- Match Selector -->
+  <div class="match-tabs" id="matchTabs"></div>
+
+  <!-- Ground Blueprint -->
+  <div class="ground-container reveal" id="groundContainer">
+    <div class="ground-title" id="groundTitle">🏟️ WANKHEDE STADIUM — SELECT YOUR STAND</div>
+    <div class="ground-wrap">
+      <div class="ground-svg-wrap">
+        <svg class="ground-svg" viewBox="0 0 400 400" xmlns="http://www.w3.org/2000/svg">
+          <!-- Outer ground -->
+          <ellipse cx="200" cy="200" rx="188" ry="178" fill="#001428" stroke="#FFD700" stroke-width="1.5" stroke-dasharray="4 3"/>
+          <!-- North Stand -->
+          <path d="M 60 80 Q 200 20 340 80 L 320 110 Q 200 55 80 110 Z" fill="#1a6b3c" class="stand-seg" id="stand-north" onclick="selectStand('north')" data-stand="north"/>
+          <!-- South Stand -->
+          <path d="M 60 320 Q 200 380 340 320 L 320 290 Q 200 345 80 290 Z" fill="#1a6b3c" class="stand-seg" id="stand-south" onclick="selectStand('south')" data-stand="south"/>
+          <!-- East Stand -->
+          <path d="M 340 80 Q 395 200 340 320 L 310 300 Q 360 200 310 100 Z" fill="#c0392b" class="stand-seg" id="stand-east" onclick="selectStand('east')" data-stand="east"/>
+          <!-- West Stand -->
+          <path d="M 60 80 Q 5 200 60 320 L 90 300 Q 40 200 90 100 Z" fill="#c0392b" class="stand-seg" id="stand-west" onclick="selectStand('west')" data-stand="west"/>
+          <!-- NE Corner -->
+          <path d="M 310 100 Q 370 140 370 200 Q 370 260 310 300 L 330 305 Q 395 260 395 200 Q 395 140 330 95 Z" fill="#8e44ad" class="stand-seg" id="stand-ne" onclick="selectStand('ne')" data-stand="ne"/>
+          <!-- NW Corner -->
+          <path d="M 90 100 Q 30 140 30 200 Q 30 260 90 300 L 70 305 Q 5 260 5 200 Q 5 140 70 95 Z" fill="#8e44ad" class="stand-seg" id="stand-nw" onclick="selectStand('nw')" data-stand="nw"/>
+          <!-- Outer field ring -->
+          <ellipse cx="200" cy="200" rx="145" ry="135" fill="#2d5a27" stroke="#3a7a33" stroke-width="1"/>
+          <!-- Inner field -->
+          <ellipse cx="200" cy="200" rx="100" ry="92" fill="#3a7a33" stroke="#4a8a43" stroke-width="1"/>
+          <!-- Pitch area -->
+          <rect x="183" y="155" width="34" height="90" rx="4" fill="#c8a96e" stroke="#b8994e" stroke-width="1"/>
+          <!-- Crease lines -->
+          <line x1="178" y1="175" x2="222" y2="175" stroke="#fff" stroke-width="1.5"/>
+          <line x1="178" y1="225" x2="222" y2="225" stroke="#fff" stroke-width="1.5"/>
+          <!-- Wickets -->
+          <rect x="196" y="160" width="8" height="3" rx="1" fill="#fff"/>
+          <rect x="196" y="237" width="8" height="3" rx="1" fill="#fff"/>
+          <!-- Center circle -->
+          <circle cx="200" cy="200" r="28" fill="none" stroke="#4a8a43" stroke-width="1" stroke-dasharray="3 2"/>
+          <!-- Boundary rope -->
+          <ellipse cx="200" cy="200" rx="140" ry="130" fill="none" stroke="#fff" stroke-width="1" stroke-dasharray="5 4" opacity=".4"/>
+          <!-- Stand labels -->
+          <text x="200" y="48" text-anchor="middle" fill="#fff" font-size="9" font-family="sans-serif" font-weight="700" pointer-events="none">NORTH PAVILION</text>
+          <text x="200" y="365" text-anchor="middle" fill="#fff" font-size="9" font-family="sans-serif" font-weight="700" pointer-events="none">SOUTH STAND</text>
+          <text x="355" y="204" text-anchor="middle" fill="#fff" font-size="8" font-family="sans-serif" font-weight="700" pointer-events="none" transform="rotate(90,355,204)">EAST STAND</text>
+          <text x="45" y="204" text-anchor="middle" fill="#fff" font-size="8" font-family="sans-serif" font-weight="700" pointer-events="none" transform="rotate(-90,45,204)">WEST STAND</text>
+          <!-- Availability indicators on stands (dots) -->
+          <circle cx="200" cy="68" r="5" fill="#00ff88" opacity=".8" class="stand-avail" id="avail-north"/>
+          <circle cx="200" cy="335" r="5" fill="#ff4455" opacity=".8" class="stand-avail" id="avail-south"/>
+          <circle cx="335" cy="200" r="5" fill="#ffaa00" opacity=".8" class="stand-avail" id="avail-east"/>
+          <circle cx="65" cy="200" r="5" fill="#ffaa00" opacity=".8" class="stand-avail" id="avail-west"/>
+          <circle cx="348" cy="130" r="5" fill="#00ff88" opacity=".8" class="stand-avail" id="avail-ne"/>
+          <circle cx="52" cy="130" r="5" fill="#00ff88" opacity=".8" class="stand-avail" id="avail-nw"/>
+          <!-- Logo center -->
+          <text x="200" y="196" text-anchor="middle" fill="#FFD700" font-size="11" font-family="sans-serif" font-weight="900" pointer-events="none">IPL</text>
+          <text x="200" y="210" text-anchor="middle" fill="#FFD700" font-size="7" font-family="sans-serif" pointer-events="none">2026</text>
+        </svg>
+      </div>
+      <div class="ground-legend">
+        <div class="legend-title">🎯 Stand Availability</div>
+        <div class="legend-item"><div class="legend-color" style="background:#1a6b3c"></div><div class="legend-info"><div class="legend-name">North/South Pavilion</div><div class="legend-sub">Premium covered seating</div></div><div class="legend-price">₹4,500</div></div>
+        <div class="legend-item"><div class="legend-color" style="background:#c0392b"></div><div class="legend-info"><div class="legend-name">East / West Stand</div><div class="legend-sub">Open seating · Popular</div></div><div class="legend-price">₹2,800</div></div>
+        <div class="legend-item"><div class="legend-color" style="background:#8e44ad"></div><div class="legend-info"><div class="legend-name">Corner Stands</div><div class="legend-sub">Budget friendly · Good view</div></div><div class="legend-price">₹1,500</div></div>
+        <div style="display:flex;gap:.8rem;margin:1rem 0 .5rem">
+          <div style="display:flex;align-items:center;gap:.4rem;font-size:.75rem;color:var(--muted2)"><span style="width:10px;height:10px;background:#00ff88;border-radius:50%;display:inline-block"></span>Available</div>
+          <div style="display:flex;align-items:center;gap:.4rem;font-size:.75rem;color:var(--muted2)"><span style="width:10px;height:10px;background:#ffaa00;border-radius:50%;display:inline-block"></span>Filling Fast</div>
+          <div style="display:flex;align-items:center;gap:.4rem;font-size:.75rem;color:var(--muted2)"><span style="width:10px;height:10px;background:#ff4455;border-radius:50%;display:inline-block"></span>Almost Full</div>
+        </div>
+        <div class="sel-stand-info" id="selStandInfo">
+          <div class="ssi-title">👆 Click a stand to select</div>
+          <p style="font-size:.8rem;color:var(--muted2);margin-top:.3rem">Tap any colored section on the ground to see pricing and availability details.</p>
+        </div>
+      </div>
+    </div>
+    <!-- Qty & Book -->
+    <div class="ticket-summary" id="iplTicketSummary" style="display:none">
+      <div class="ts-title">🎟️ YOUR IPL TICKET SUMMARY</div>
+      <div class="ts-grid">
+        <div class="ts-item"><div class="ts-label">Match</div><div class="ts-value" id="tsMatch">—</div></div>
+        <div class="ts-item"><div class="ts-label">Stand</div><div class="ts-value" id="tsStand">—</div></div>
+        <div class="ts-item"><div class="ts-label">Date & Time</div><div class="ts-value" id="tsDate">—</div></div>
+        <div class="ts-item"><div class="ts-label">Venue</div><div class="ts-value" id="tsVenue">—</div></div>
+      </div>
+      <div style="display:flex;align-items:center;justify-content:space-between;margin-bottom:1rem;flex-wrap:wrap;gap:.8rem">
+        <label style="font-size:.8rem;font-weight:600;color:var(--muted2)">Number of Seats</label>
+        <div class="qty-ctrl">
+          <button class="qty-btn" onclick="changeQty(-1)">−</button>
+          <span id="qtyVal" style="font-weight:700;min-width:24px;text-align:center">1</span>
+          <button class="qty-btn" onclick="changeQty(1)">+</button>
+        </div>
+      </div>
+      <div class="ts-total">
+        <div class="ts-total-label">💰 Total Amount</div>
+        <div class="ts-total-price" id="tsTotal">₹0</div>
+      </div>
+      <button class="btn-book-ipl" onclick="openIPLModal()">🏏 Proceed to Book IPL Ticket</button>
+    </div>
+  </div>
+
+  <!-- Players Section -->
+  <div class="players-section reveal" id="playersSection">
+    <div class="players-title" id="playersTitle">🏏 MATCH PLAYERS</div>
+    <div class="teams-row" id="teamsRow"></div>
+  </div>
+</div></section>
+
+<!-- ARTISTS -->
+<section id="artists"><div class="container reveal">
+  <div class="sec-tag">Featured Artists</div>
+  <h2 class="sec-title">Meet the Performers</h2>
+  <div class="artists-row" id="artistsRow"></div>
+</div></section>
+
+<!-- GALLERY -->
+<section id="gallery"><div class="container reveal">
+  <div class="sec-tag">Highlights</div>
+  <h2 class="sec-title">Past Event Gallery</h2>
+  <div class="gallery-grid" id="galleryGrid"></div>
+</div></section>
+
+<!-- REVIEWS -->
+<section style="padding-top:0"><div class="container reveal">
+  <div class="sec-tag">What People Say</div>
+  <h2 class="sec-title">Reviews & Ratings</h2>
+  <div class="reviews-wrap" id="reviewsWrap"></div>
+</div></section>
+
+<!-- NOTIFY -->
+<section id="notify"><div class="container reveal">
+  <div class="notify-box">
+    <div style="font-size:2.2rem;margin-bottom:.7rem">🔔</div>
+    <h3>Never Miss an Event</h3>
+    <p>Get notified when new events drop or sold-out slots reopen.</p>
+    <div class="notify-form">
+      <input type="email" id="notifyEmail" placeholder="your@email.com"/>
+      <button onclick="subscribeNotify()">Notify Me 🚀</button>
+    </div>
+  </div>
+</div></section>
+
+<footer>
+  <div class="footer-logo">EntertainX</div>
+  <p style="margin-bottom:.3rem">© 2026 EntertainX · Built for entertainment lovers everywhere ❤️</p>
+  <p>All events · All vibes · One platform</p>
+</footer>
+
+<!-- LIGHTBOX -->
+<div class="lightbox" id="lightbox" onclick="closeLB()">
+  <img class="lb-img" id="lbImg" src="" alt=""/>
+  <button class="lb-close" onclick="closeLB()">✕</button>
+</div>
+
+<!-- REGISTRATION MODAL -->
+<div class="overlay" id="overlay" onclick="closeModalOuter(event)">
+  <div class="modal" id="modal">
+    <div class="mhead">
+      <div><div class="mtitle" id="mTitle">Event Registration</div><div class="msub" id="mSub">Complete steps to secure your spot.</div></div>
+      <button class="mx" onclick="closeModal()">✕</button>
+    </div>
+    <div class="msteps" id="mStepsBar">
+      <div class="msi active" id="msi1"><div class="msn">1</div><div class="msl">Info</div></div>
+      <div class="msdiv"></div>
+      <div class="msi" id="msi2"><div class="msn">2</div><div class="msl">Tickets</div></div>
+      <div class="msdiv"></div>
+      <div class="msi" id="msi3"><div class="msn">3</div><div class="msl">Payment</div></div>
+      <div class="msdiv"></div>
+      <div class="msi" id="msi4"><div class="msn">4</div><div class="msl">Confirm</div></div>
+    </div>
+    <div class="mbody">
+      <!-- Step 1 -->
+      <div class="mfs active" id="mfs1">
+        <div class="frow">
+          <div class="fg"><label class="fl">First Name *</label><input class="fi" id="fn" placeholder="John"/><div class="em-err" id="eFn">Required</div></div>
+          <div class="fg"><label class="fl">Last Name *</label><input class="fi" id="ln" placeholder="Doe"/><div class="em-err" id="eLn">Required</div></div>
+        </div>
+        <div class="fg"><label class="fl">Email *</label><input class="fi" id="em" type="email" placeholder="john@email.com"/><div class="em-err" id="eEm">Valid email required</div></div>
+        <div class="fg"><label class="fl">Phone *</label><input class="fi" id="ph" type="tel" placeholder="+91 98765 43210"/><div class="em-err" id="ePh">Phone required</div></div>
+        <div class="fg"><label class="fl">Age Group</label><select class="fsel"><option>Select</option><option>Under 18</option><option>18–25</option><option>26–35</option><option>36–50</option><option>50+</option></select></div>
+        <div class="fg"><label class="fl">Special Requirements</label><textarea class="fta" placeholder="Dietary, accessibility needs..."></textarea></div>
+      </div>
+      <!-- Step 2 -->
+      <div class="mfs" id="mfs2">
+        <div class="fg">
+          <label class="fl">Ticket Type *</label>
+          <div class="t-opts">
+            <label class="t-opt sel" id="tG"><input type="radio" name="tkt" value="general" checked onchange="selTkt(this)"/><div><div class="ttype">🎟️ General Admission</div><div class="tdesc">Main event area access</div></div><div class="tpx" id="pG">₹499</div></label>
+            <label class="t-opt" id="tV"><input type="radio" name="tkt" value="vip" onchange="selTkt(this)"/><div><div class="ttype">⭐ VIP Pass</div><div class="tdesc">Front row + backstage + merch</div></div><div class="tpx" id="pV">₹1,299</div></label>
+            <label class="t-opt" id="tGr"><input type="radio" name="tkt" value="group" onchange="selTkt(this)"/><div><div class="ttype">👥 Group (5 pax)</div><div class="tdesc">Best value for groups</div></div><div class="tpx" id="pGr">₹1,999</div></label>
+          </div>
+        </div>
+        <div class="fg"><label class="fl">Number of Tickets</label><select class="fsel" id="tQty"><option>1</option><option>2</option><option>3</option><option>4</option><option>5</option></select></div>
+        <div class="fg"><label class="fl">T-Shirt Size (optional)</label><select class="fsel"><option>No T-Shirt</option><option>XS</option><option>S</option><option>M</option><option>L</option><option>XL</option><option>XXL</option></select></div>
+      </div>
+      <!-- Step 3 -->
+      <div class="mfs" id="mfs3">
+        <div class="sum-box">
+          <div class="sum-ename" id="seName"></div>
+          <div class="srow"><span>Ticket</span><span id="seT"></span></div>
+          <div class="srow"><span>Qty</span><span id="seQ"></span></div>
+          <div class="srow"><span>Attendee</span><span id="seN"></span></div>
+          <div class="srow tot"><span>Total</span><span class="stprice" id="seP"></span></div>
+        </div>
+        <div class="promo-row"><input class="fi" id="promo" placeholder="Promo code (try ENTER10)"/><button class="btn-promo" onclick="applyPromo()">Apply</button></div>
+        <label class="fl">Payment Method</label>
+        <div class="pirow"><span class="pi sel">💳 Card</span><span class="pi">📱 UPI</span><span class="pi">🏦 Net Banking</span><span class="pi">💰 Wallet</span></div>
+        <div class="fg"><label class="fl">Card Number *</label><input class="fi" id="cNum" placeholder="1234 5678 9012 3456" maxlength="19" oninput="fmtCard(this)"/><div class="em-err" id="eCn">Enter valid card number</div></div>
+        <div class="frow">
+          <div class="fg"><label class="fl">Expiry *</label><input class="fi" id="cExp" placeholder="MM/YY" maxlength="5" oninput="fmtExp(this)"/><div class="em-err" id="eExp">Invalid expiry</div></div>
+          <div class="fg"><label class="fl">CVV *</label><input class="fi" id="cCvv" type="password" placeholder="•••" maxlength="4"/><div class="em-err" id="eCvv">Invalid CVV</div></div>
+        </div>
+        <div class="fg"><label class="fl">Name on Card *</label><input class="fi" id="cName" placeholder="John Doe"/><div class="em-err" id="eCn2">Required</div></div>
+      </div>
+      <!-- Step 4 -->
+      <div class="mfs" id="mfs4">
+        <div class="sum-box">
+          <div class="sum-ename" id="cfEv"></div>
+          <div class="srow"><span>Attendee</span><span id="cfNm"></span></div>
+          <div class="srow"><span>Email</span><span id="cfEm"></span></div>
+          <div class="srow"><span>Phone</span><span id="cfPh"></span></div>
+          <div class="srow"><span>Ticket</span><span id="cfTk"></span></div>
+          <div class="srow"><span>Qty</span><span id="cfQt"></span></div>
+          <div class="srow tot"><span>Total Paid</span><span class="stprice" id="cfTp"></span></div>
+        </div>
+        <p style="color:var(--muted2);font-size:.8rem;line-height:1.7">By clicking <strong style="color:var(--text)">Complete Registration</strong> you agree to our Terms. Your QR ticket will be emailed to you.</p>
+      </div>
+    </div>
+    <div class="mfoot" id="mFoot">
+      <button class="btn-back" id="bBack" onclick="prevStep()" style="visibility:hidden">← Back</button>
+      <button class="btn-next" id="bNext" onclick="nextStep()">Continue →</button>
+    </div>
+    <!-- SUCCESS -->
+    <div class="success" id="successSc">
+      <div class="s-ico">🎉</div>
+      <div class="s-title">You're In!</div>
+      <p class="s-sub">Registration confirmed! Your QR ticket is on its way to your inbox.</p>
+      <div class="qr-box">🎟️</div>
+      <div class="tid" id="tidVal">TKT-000000</div>
+      <div class="tid-lbl">Save this ticket ID</div>
+      <div class="s-acts">
+        <button class="btn-cal" onclick="addToCal()">📅 Add to Calendar</button>
+        <button class="btn-sh" onclick="shareEv()">🔗 Share</button>
+        <button class="btn-next" onclick="closeModal()">Browse More →</button>
+      </div>
+    </div>
+  </div>
+</div>
+
+<script>
+// ── DATA ──
+const EVENTS=[
+  {id:1,cat:'Music',title:'Battle of the Bands',date:'May 10, 2026',ts:'2026-05-10',time:'7 PM',venue:'Rock Arena',price:499,badge:'hot',seats:120,filled:80,img:'https://images.unsplash.com/photo-1511735111819-9a3efd16f78e?w=400&q=80',rating:4.8,reviews:142},
+  {id:2,cat:'Music',title:'DJ Night & EDM Festival',date:'May 17, 2026',ts:'2026-05-17',time:'9 PM',venue:'Neon Club',price:799,badge:'trending',seats:300,filled:210,img:'https://images.unsplash.com/photo-1516450360452-9312f5e86fc7?w=400&q=80',rating:4.6,reviews:89},
+  {id:3,cat:'Music',title:'Classical Music Evening',date:'Jun 2, 2026',ts:'2026-06-02',time:'6 PM',venue:'Grand Auditorium',price:0,badge:'new',seats:200,filled:40,img:'https://images.unsplash.com/photo-1507838153414-b4b713384a76?w=400&q=80',rating:4.9,reviews:33},
+  {id:4,cat:'Music',title:'Solo Singing Competition',date:'Jun 14, 2026',ts:'2026-06-14',time:'5 PM',venue:'City Hall',price:299,badge:'',seats:150,filled:90,img:'https://images.unsplash.com/photo-1460723237483-7a6dc9d0b212?w=400&q=80',rating:4.5,reviews:67},
+  {id:5,cat:'Performance',title:'Open Mic Night',date:'May 8, 2026',ts:'2026-05-08',time:'8 PM',venue:'The Stage Café',price:0,badge:'new',seats:80,filled:20,img:'https://images.unsplash.com/photo-1524368535928-5b5e00ddc76b?w=400&q=80',rating:4.7,reviews:54},
+  {id:6,cat:'Performance',title:'Stand-Up Comedy Show',date:'May 21, 2026',ts:'2026-05-21',time:'8:30 PM',venue:'Laugh Factory',price:599,badge:'hot',seats:100,filled:97,img:'https://images.unsplash.com/photo-1543285198-3af15c4592ce?w=400&q=80',rating:4.9,reviews:211},
+  {id:7,cat:'Performance',title:'Magic Show Extravaganza',date:'Jun 5, 2026',ts:'2026-06-05',time:'7:30 PM',venue:'Theatre Royal',price:399,badge:'',seats:120,filled:60,img:'https://images.unsplash.com/photo-1514320291840-2e0a9bf2a9ae?w=400&q=80',rating:4.6,reviews:78},
+  {id:8,cat:'Performance',title:'Drama: Romeo & Juliet',date:'Jun 20, 2026',ts:'2026-06-20',time:'6:30 PM',venue:'Arts Center',price:199,badge:'',seats:200,filled:110,img:'https://images.unsplash.com/photo-1503095396549-807759245b35?w=400&q=80',rating:4.4,reviews:45},
+  {id:9,cat:'Film',title:'Outdoor Movie Night',date:'May 12, 2026',ts:'2026-05-12',time:'8 PM',venue:'Riverside Park',price:0,badge:'',seats:500,filled:180,img:'https://images.unsplash.com/photo-1489599849927-2ee91cede3ba?w=400&q=80',rating:4.5,reviews:122},
+  {id:10,cat:'Film',title:'Short Film Festival',date:'May 25, 2026',ts:'2026-05-25',time:'3 PM',venue:'Indie Cinema',price:349,badge:'new',seats:150,filled:50,img:'https://images.unsplash.com/photo-1478720568477-152d9b164e26?w=400&q=80',rating:4.7,reviews:39},
+  {id:11,cat:'Film',title:'Anime Convention 2026',date:'Jun 7, 2026',ts:'2026-06-07',time:'10 AM',venue:'Convention Center',price:899,badge:'hot',seats:1000,filled:880,img:'https://images.unsplash.com/photo-1578632767115-351597cf2477?w=400&q=80',rating:4.9,reviews:567},
+  {id:12,cat:'Film',title:'Podcast Live Recording',date:'Jun 18, 2026',ts:'2026-06-18',time:'7 PM',venue:'Studio B',price:199,badge:'',seats:60,filled:30,img:'https://images.unsplash.com/photo-1590602847861-f357a9332bbc?w=400&q=80',rating:4.3,reviews:28},
+  {id:13,cat:'Gaming',title:'BGMI Championship',date:'May 15, 2026',ts:'2026-05-15',time:'11 AM',venue:'E-Sports Arena',price:499,badge:'hot',seats:200,filled:190,img:'https://images.unsplash.com/photo-1542751371-adc38448a05e?w=400&q=80',rating:4.9,reviews:334},
+  {id:14,cat:'Gaming',title:'Valorant LAN Tournament',date:'May 28, 2026',ts:'2026-05-28',time:'10 AM',venue:'Tech Hub',price:399,badge:'trending',seats:128,filled:64,img:'https://images.unsplash.com/photo-1593305841991-05c297ba4575?w=400&q=80',rating:4.7,reviews:156},
+  {id:15,cat:'Gaming',title:'Retro Game Night',date:'Jun 10, 2026',ts:'2026-06-10',time:'6 PM',venue:'Pixel Lounge',price:0,badge:'new',seats:50,filled:10,img:'https://images.unsplash.com/photo-1550745165-9bc0b252726f?w=400&q=80',rating:4.5,reviews:22},
+  {id:16,cat:'Gaming',title:'VR Experience Expo',date:'Jun 22, 2026',ts:'2026-06-22',time:'12 PM',venue:'Innovation Park',price:699,badge:'',seats:100,filled:55,img:'https://images.unsplash.com/photo-1592478411213-6153e4ebc696?w=400&q=80',rating:4.6,reviews:88},
+  {id:17,cat:'Dance',title:'Hip-Hop Dance Battle',date:'May 18, 2026',ts:'2026-05-18',time:'6 PM',venue:'Urban Studio',price:299,badge:'hot',seats:150,filled:120,img:'https://images.unsplash.com/photo-1547153760-18fc86324498?w=400&q=80',rating:4.8,reviews:198},
+  {id:18,cat:'Dance',title:'Salsa & Latin Night',date:'May 30, 2026',ts:'2026-05-30',time:'8 PM',venue:'Rhythm Hall',price:399,badge:'',seats:100,filled:45,img:'https://images.unsplash.com/photo-1504609813442-a8924e83f76e?w=400&q=80',rating:4.6,reviews:73},
+  {id:19,cat:'Dance',title:'Flash Mob Event',date:'Jun 8, 2026',ts:'2026-06-08',time:'5 PM',venue:'Central Square',price:0,badge:'new',seats:300,filled:80,img:'https://images.unsplash.com/photo-1518834107812-67b0b7c58434?w=400&q=80',rating:4.4,reviews:41},
+  {id:20,cat:'Dance',title:'Dance Showcase Night',date:'Jun 25, 2026',ts:'2026-06-25',time:'7 PM',venue:'Grand Theatre',price:499,badge:'',seats:200,filled:130,img:'https://images.unsplash.com/photo-1571019614242-c5c5dee9f50b?w=400&q=80',rating:4.7,reviews:115},
+];
+
+// IPL Data
+const IPL_MATCHES=[
+  {id:1,team1:'Mumbai Indians',team2:'Chennai Super Kings',short1:'MI',short2:'CSK',date:'May 3, 2026',time:'7:30 PM',venue:'Wankhede Stadium',color1:'#004BA0',color2:'#F9CD05',emoji1:'🔵',emoji2:'🟡',
+    players1:[
+      {name:'Rohit Sharma',role:'Batsman',rb:'bat',captain:true,img:'https://documents.iplt20.com/ipl/IPLHeadshot2026/6.png'},
+      {name:'Jasprit Bumrah',role:'Bowler',rb:'bowl',img:'https://documents.iplt20.com/ipl/IPLHeadshot2026/9.png'},
+      {name:'Hardik Pandya',role:'All-Rounder',rb:'all',img:'https://documents.iplt20.com/ipl/IPLHeadshot2026/54.png'},
+      {name:'Suryakumar Yadav',role:'Batsman',rb:'bat',img:'https://documents.iplt20.com/ipl/IPLHeadshot2026/174.png'},
+      {name:'Quinton de Kock',role:'WK-Bat',rb:'wk',img:'https://documents.iplt20.com/ipl/IPLHeadshot2026/170.png'},
+      {name:'Tilak Varma',role:'Batsman',rb:'bat',img:'https://documents.iplt20.com/ipl/IPLHeadshot2026/993.png'},
+      {name:'Shardul Thakur',role:'All-Rounder',rb:'all',img:'https://documents.iplt20.com/ipl/IPLHeadshot2026/105.png'},
+      {name:'Deepak Chahar',role:'Bowler',rb:'bowl',img:'https://documents.iplt20.com/ipl/IPLHeadshot2026/91.png'},
+      {name:'Trent Boult',role:'Bowler',rb:'bowl',img:'https://documents.iplt20.com/ipl/IPLHeadshot2026/66.png'},
+
+      {name:'Will Jacks',role:'All-Rounder',rb:'all',img:'https://documents.iplt20.com/ipl/IPLHeadshot2026/1941.png'},
+    ],
+    players2:[
+      {name:'MS Dhoni',role:'WK-Bat',rb:'wk',img:'https://documents.iplt20.com/ipl/IPLHeadshot2026/57.png'},
+
+      {name:'Ruturaj Gaikwad',role:'Batsman',rb:'bat',captain:true, img:'https://documents.iplt20.com/ipl/IPLHeadshot2026/102.png'},
+
+      {name:'Sanju Samson',role:'WK-Batter',rb:'wk',img:'https://documents.iplt20.com/ipl/IPLHeadshot2026/190.png'},
+
+      {name:'Dewald Brevis',role:'Batter',rb:'bt',img:'https://documents.iplt20.com/ipl/IPLHeadshot2026/797.png'},
+
+      {name:'Khaleel Ahmed',role:'Bowler',rb:'bowl',img:'https://documents.iplt20.com/ipl/IPLHeadshot2026/8.png'},
+      
+      {name:'Shivam Dube',role:'All-Rounder',rb:'all',img:'https://documents.iplt20.com/ipl/IPLHeadshot2026/211.png'},
+
+      {name:'Noor Ahmed',role:'Bowler',rb:'bowl',img:'https://documents.iplt20.com/ipl/IPLHeadshot2026/975.png'},
+
+      {name:'Anshul Kamboj',role:'Bowler',rb:'bowl',img:'https://documents.iplt20.com/ipl/IPLHeadshot2026/3106.png'},
+
+      {name:'Jamie Overton',role:'All-Rounder',rb:'all',img:'https://documents.iplt20.com/ipl/IPLHeadshot2026/1216.png'},
+
+      {name:'Sarfaraz Khan',role:'Batter',rb:'bt',img:'https://documents.iplt20.com/ipl/IPLHeadshot2026/139.png'},
+
+    ]
+  },
+
+  {id:2,team1:'Royal Challengers Bengaluru',team2:'Kolkata Knight Riders',short1:'RCB',short2:'KKR',date:'May 8, 2026',time:'7:30 PM',venue:'M. Chinnaswamy Stadium',color1:'#EC1C24',color2:'#3A225D',emoji1:'🔴',emoji2:'🟣',
+
+    players1:[
+      {name:'Rajat Patidar',role:'Batsman',rb:'bat',captain:true,img:'https://documents.iplt20.com/ipl/IPLHeadshot2026/597.png'},
+
+      {name:'Virat Kohli',role:'Batsman',rb:'bat',img:'https://documents.iplt20.com/ipl/IPLHeadshot2026/2.png'},
+
+      {name:'Krunal Pandya',role:'All-Rounder',rb:'all',img:'https://documents.iplt20.com/ipl/IPLHeadshot2026/17.png'},
+
+      {name:'Bhuvneshwar Kumar',role:'Bowler',rb:'bowl',img:'https://documents.iplt20.com/ipl/IPLHeadshot2026/15.png'},
+
+      {name:'Phil Salt',role:'WK-Bat',rb:'wk',img:'https://documents.iplt20.com/ipl/IPLHeadshot2026/1220.png'},
+
+      {name:'Josh Hazlewood',role:'Bowler',rb:'bowl',img:'https://documents.iplt20.com/ipl/IPLHeadshot2026/36.png'},
+
+      {name:'Devdutt Padikkal',role:'Batsman',rb:'bat',img:'https://documents.iplt20.com/ipl/IPLHeadshot2026/200.png'},
+
+      {name:'Tim David',role:'All-Rounder',rb:'all',img:'https://documents.iplt20.com/ipl/IPLHeadshot2026/636.png'},
+
+      {name:'Suyash Sharma',role:'Bowler',rb:'bowl',img:'https://documents.iplt20.com/ipl/IPLHeadshot2026/1932.png'},
+
+      {name:'Jacob Bethell',role:'All-Rounder',rb:'all',img:'https://documents.iplt20.com/ipl/IPLHeadshot2026/869.png'},
+
+
+    ],
+
+
+    players2:[
+
+      {name:'Ajinkya Rahane',role:'Batsman',rb:'bat',captain:true,img:'https://documents.iplt20.com/ipl/IPLHeadshot2026/44.png'},
+
+      {name:'Rinku Singh',role:'Batsman',rb:'bat',img:'https://documents.iplt20.com/ipl/IPLHeadshot2026/152.png'},
+
+      {name:'Sunil Narine',role:'All-Rounder',rb:'all',img:'https://documents.iplt20.com/ipl/IPLHeadshot2026/156.png'},
+
+      {name:'Matheesha Pathirana',role:'Bowler',rb:'bowl',img:'https://documents.iplt20.com/ipl/IPLHeadshot2026/1014.png'},
+
+      {name:'Cameron Green',role:'All-Rounder',rb:'all',img:'https://documents.iplt20.com/ipl/IPLHeadshot2026/550.png'},
+
+      {name:'Varun Chakravarthy',role:'Bowler',rb:'bowl',img:'https://documents.iplt20.com/ipl/IPLHeadshot2026/140.png'},
+
+      {name:'Vaibhav Arora',role:'Bowler',rb:'bowl',img:'https://documents.iplt20.com/ipl/IPLHeadshot2026/583.png'},
+
+     {name:'Rachin Ravindra',role:'All-Rounder',rb:'all',img:'https://documents.iplt20.com/ipl/IPLHeadshot2026/724.png'},
+
+    {name:'Angkrish Raghuvanshi',role:'Batter',rb:'all',img:'https://documents.iplt20.com/ipl/IPLHeadshot2026/787.png'},
+
+    {name:'Tejasvi Singh',role:'WK-Batter',rb:'wk',img:'https://documents.iplt20.com/ipl/IPLHeadshot2026/4281.png'},
+
+
+
+
+
+    ]
+  },
+  {id:3,team1:'Rajasthan Royals',team2:'Delhi Capitals',short1:'RR',short2:'DC',date:'May 12, 2026',time:'3:30 PM',venue:'Sawai Mansingh Stadium',color1:'#EA1A85',color2:'#17479E',emoji1:'🩷',emoji2:'🔷',
+    players1:[
+      {name:'Riyan Parag',role:'All-Rounder',rb:'all',captain:true,img:'https://documents.iplt20.com/ipl/IPLHeadshot2026/189.png'},
+
+      {name:'Ravindra Jadeja',role:'All-Rounder',rb:'all',img:'https://documents.iplt20.com/ipl/IPLHeadshot2026/46.png'},
+
+      {name:'Yashasvi Jaiswal',role:'Batsman',rb:'bat',img:'https://documents.iplt20.com/ipl/IPLHeadshot2026/533.png'},
+
+      {name:'Vaibhav Sooryavanshi',role:'Batsman',rb:'bat',img:'https://documents.iplt20.com/ipl/IPLHeadshot2026/3498.png'},
+
+
+      {name:'Tushar Deshpande',role:'Bowler',rb:'bowl',img:'https://documents.iplt20.com/ipl/IPLHeadshot2026/539.png'},
+
+      {name:'Shimron Hetmyer',role:'Batsman',rb:'bat',img:'https://documents.iplt20.com/ipl/IPLHeadshot2026/210.png'},
+
+      {name:'Nandre Burger',role:'Bowler',rb:'bowl',img:'https://documents.iplt20.com/ipl/IPLHeadshot2026/2806.png'},
+
+      {name:'Jofra Archer',role:'Bowler',rb:'bowl',img:'https://documents.iplt20.com/ipl/IPLHeadshot2026/181.png'},
+
+     {name:'Dhruv Jurel',role:'WK-Batter',rb:'wk',img:'https://documents.iplt20.com/ipl/IPLHeadshot2026/1004.png'},
+
+     {name:'Shubham Dubey',role:'Batsman',rb:'bat',img:'https://documents.iplt20.com/ipl/IPLHeadshot2026/3112.png'},
+    ],
+
+
+    players2:[
+
+    {name:'Axar Patel',role:'All-Rounder',rb:'all',captain:true,img:'https://documents.iplt20.com/ipl/IPLHeadshot2026/110.png'},
+
+      {name:'KL Rahul',role:'WK-Batter',rb:'wk',img:'https://documents.iplt20.com/ipl/IPLHeadshot2026/19.png'},
+
+      {name:'David Miller',role:'Batsman',rb:'bat',img:'https://documents.iplt20.com/ipl/IPLHeadshot2026/128.png'},
+
+      {name:'Mitchell Starc',role:'Bowler',rb:'bowl',img:'https://documents.iplt20.com/ipl/IPLHeadshot2026/31.png'},
+ 
+
+      {name:'Sameer Rizvi',role:'All-Rounder',rb:'all',img:'https://documents.iplt20.com/ipl/IPLHeadshot2026/1229.png'},
+
+      {name:'T.Natarajan',role:'Bowler',rb:'bowl',img:'https://documents.iplt20.com/ipl/IPLHeadshot2026/224.png'},
+ 
+      {name:'Kuldeep Yadav',role:'Bowler',rb:'bowl',img:'https://documents.iplt20.com/ipl/IPLHeadshot2026/14.png'},
+ 
+      {name:'Karun Nair',role:'Batsman',rb:'bat',img:'https://documents.iplt20.com/ipl/IPLHeadshot2026/131.png'},
+
+      {name:'Ashutosh Sharma',role:'All-Rounder',rb:'all',img:'https://documents.iplt20.com/ipl/IPLHeadshot2026/3109.png'},
+
+    {name:'Lungisani Ngidi',role:'Bowler',rb:'bowl',img:'https://documents.iplt20.com/ipl/IPLHeadshot2026/99.png'},
+    ]
+  }
+];
+
+const STANDS={
+  north:{name:'North Pavilion',price:4500,total:2400,filled:1600,type:'Premium Covered'},
+  south:{name:'South Stand',price:4500,total:2200,filled:2100,type:'Premium Covered'},
+  east:{name:'East Stand',price:2800,total:3000,filled:1800,type:'Open Seating'},
+  west:{name:'West Stand',price:2800,total:3000,filled:2400,type:'Open Seating'},
+  ne:{name:'NE Corner Stand',price:1500,total:1200,filled:400,type:'Budget Seating'},
+  nw:{name:'NW Corner Stand',price:1500,total:1200,filled:350,type:'Budget Seating'},
+};
+
+const ARTISTS=[
+  {name:'DJ Neon',role:'DJ / Producer',emoji:'🎧',img:'https://images.unsplash.com/photo-1571266028243-d220c6a3fd4c?w=200&q=80'},
+  {name:'Riya Kapoor',role:'Classical Vocalist',emoji:'🎤',img:'https://images.unsplash.com/photo-1516280440614-37939bbacd81?w=200&q=80'},
+  {name:'Rohan Verma',role:'Stand-up Comedian',emoji:'😂',img:'https://images.unsplash.com/photo-1574169208507-84376144848b?w=200&q=80'},
+  {name:'Ava Lee',role:'Illusionist',emoji:'🪄',img:'https://images.unsplash.com/photo-1622442563503-e8c8d28abf6b?w=200&q=80'},
+  {name:'Marco Silva',role:'Film Director',emoji:'🎬',img:'https://images.unsplash.com/photo-1568602471122-7832951cc4c5?w=200&q=80'},
+  {name:'Pro-Gamer X',role:'Esports Champion',emoji:'🏆',img:'https://images.unsplash.com/photo-1614632537423-1e6c2e7e0aab?w=200&q=80'},
+  {name:'Sia Moves',role:'Choreographer',emoji:'💃',img:'https://images.unsplash.com/photo-1547153760-18fc86324498?w=200&q=80'},
+  {name:'Beat Master',role:'Beatboxer',emoji:'🎵',img:'https://images.unsplash.com/photo-1493225457124-a3eb161ffa5f?w=200&q=80'},
+];
+
+const GALLERY=[
+  'https://images.unsplash.com/photo-1470229722913-7c0e2dbbafd3?w=300&q=80',
+  'https://images.unsplash.com/photo-1542751371-adc38448a05e?w=300&q=80',
+  'https://images.unsplash.com/photo-1518834107812-67b0b7c58434?w=300&q=80',
+  'https://images.unsplash.com/photo-1489599849927-2ee91cede3ba?w=300&q=80',
+  'https://images.unsplash.com/photo-1516450360452-9312f5e86fc7?w=300&q=80',
+  'https://images.unsplash.com/photo-1524368535928-5b5e00ddc76b?w=300&q=80',
+  'https://images.unsplash.com/photo-1593305841991-05c297ba4575?w=300&q=80',
+  'https://images.unsplash.com/photo-1571019614242-c5c5dee9f50b?w=300&q=80',
+  'https://images.unsplash.com/photo-1507838153414-b4b713384a76?w=300&q=80',
+  'https://images.unsplash.com/photo-1543285198-3af15c4592ce?w=300&q=80',
+  'https://images.unsplash.com/photo-1550745165-9bc0b252726f?w=300&q=80',
+  'https://images.unsplash.com/photo-1504609813442-a8924e83f76e?w=300&q=80',
+];
+
+const TICKET_PRICES={general:499,vip:1299,group:1999};
+const TICKET_NAMES={general:'General Admission',vip:'VIP Pass',group:'Group (5 pax)'};
+
+let wishlist=[];
+let curFilter='All';
+let curStep=1;
+let selEvent=null;
+let selTktPrice=499;
+let selTktType='General Admission';
+let visibleCount=8;
+let allFiltered=[...EVENTS];
+let isDark=true;
+let selMatch=IPL_MATCHES[0];
+let selStand=null;
+let iplQty=1;
+let isIPLModal=false;
+
+// ── NAV SCROLL ──
+window.addEventListener('scroll',()=>document.getElementById('nav').classList.toggle('sc',scrollY>60));
+
+// ── MOBILE MENU ──
+function closeMobMenu(){document.getElementById('mobMenu').classList.remove('open')}
+
+// ── THEME ──
+function toggleTheme(){
+  isDark=!isDark;
+  document.documentElement.setAttribute('data-theme',isDark?'dark':'light');
+  document.getElementById('themeBtn').textContent=isDark?'🌙':'☀️';
+}
+
+// ── COUNTER ──
+function animCount(el){
+  const t=+el.dataset.t;let c=0;const step=Math.ceil(t/55);
+  const iv=setInterval(()=>{c=Math.min(c+step,t);el.textContent=c+(t>=50?'+':'');if(c>=t)clearInterval(iv)},22);
+}
+const cObs=new IntersectionObserver(es=>{es.forEach(e=>{if(e.isIntersecting){animCount(e.target);cObs.unobserve(e.target)}})},{threshold:.5});
+document.querySelectorAll('.stat .num').forEach(n=>cObs.observe(n));
+
+// ── REVEAL ──
+const rObs=new IntersectionObserver(es=>{es.forEach(e=>{if(e.isIntersecting){e.target.classList.add('vis');rObs.unobserve(e.target)}})},{threshold:.08});
+document.querySelectorAll('.reveal').forEach(el=>rObs.observe(el));
+
+// ── STRIP ──
+(function(){
+  const hot=EVENTS.filter(e=>e.badge);
+  const t=document.getElementById('stripTrack');
+  let h=[...hot,...hot,...hot].map(e=>`<div class="strip-item"><span class="ship">🔥</span>${e.title} · ${e.venue}</div>`).join('');
+  t.innerHTML=h;
+})();
+
+// ── TOAST ──
+function showToast(msg){
+  const c=document.getElementById('toastC'),t=document.createElement('div');
+  t.className='toast';t.innerHTML=`<span>✨</span>${msg}`;
+  c.appendChild(t);
+  setTimeout(()=>{t.classList.add('out');setTimeout(()=>t.remove(),280)},2800);
+}
+
+// ── SEARCH ──
+function handleSearch(v){
+  const q=v.trim().toLowerCase();
+  allFiltered=q?EVENTS.filter(e=>e.title.toLowerCase().includes(q)||e.cat.toLowerCase().includes(q)||e.venue.toLowerCase().includes(q)):[...EVENTS];
+  visibleCount=8;renderGrid(allFiltered.slice(0,visibleCount));
+  document.getElementById('loadWrap').style.display=allFiltered.length>visibleCount?'block':'none';
+  if(q)document.getElementById('events').scrollIntoView({behavior:'smooth'});
+}
+
+// ── FILTER ──
+function filterEvents(cat,btn){
+  curFilter=cat;
+  document.querySelectorAll('.tab').forEach(t=>t.classList.remove('active'));
+  if(btn)btn.classList.add('active');
+  else document.querySelectorAll('.tab').forEach(t=>{if((cat==='All'&&t.textContent==='All')||t.textContent.includes(cat))t.classList.add('active')});
+  showSkel();
+  setTimeout(()=>{
+    hideSkel();
+    allFiltered=cat==='All'?[...EVENTS]:EVENTS.filter(e=>e.cat===cat);
+    visibleCount=8;renderGrid(allFiltered.slice(0,visibleCount));
+    document.getElementById('loadWrap').style.display=allFiltered.length>visibleCount?'block':'none';
+  },550);
+  if(btn)document.getElementById('events').scrollIntoView({behavior:'smooth'});
+}
+function showSkel(){
+  const g=document.getElementById('skelGrid');
+  g.innerHTML=Array(6).fill('').map(()=>`<div style="height:380px" class="skel"></div>`).join('');
+  g.style.display='grid';document.getElementById('evGrid').style.display='none';
+}
+function hideSkel(){document.getElementById('skelGrid').style.display='none';document.getElementById('evGrid').style.display='grid'}
+function loadMore(){
+  visibleCount+=4;renderGrid(allFiltered.slice(0,visibleCount));
+  document.getElementById('loadWrap').style.display=allFiltered.length>visibleCount?'block':'none';
+  showToast('More events loaded!');
+}
+
+// ── COUNTDOWN ──
+function cdText(ts){
+  const d=new Date(ts)-new Date();if(d<=0)return'Today!';
+  const days=Math.floor(d/86400000),hrs=Math.floor((d%86400000)/3600000);
+  return days>0?`${days}d ${hrs}h left`:`${hrs}h left`;
+}
+
+// ── WISHLIST ──
+function toggleWish(id){
+  const ev=EVENTS.find(x=>x.id===id);
+  const isW=wishlist.some(w=>w.id===id);
+  const btn=document.getElementById('wb'+id);
+  if(!isW){wishlist.push(ev);if(btn){btn.classList.add('saved');btn.textContent='❤️'}showToast('❤️ Added to wishlist!')}
+  else{wishlist=wishlist.filter(w=>w.id!==id);if(btn){btn.classList.remove('saved');btn.textContent='♡'}showToast('Removed from wishlist')}
+  document.getElementById('wBadge').textContent=wishlist.length;
+  document.getElementById('wBadge').classList.toggle('show',wishlist.length>0);
+  renderWishlist();
+}
+function toggleWishlist(){document.getElementById('wPanel').classList.toggle('open')}
+function renderWishlist(){
+  const c=document.getElementById('wContent');
+  if(!wishlist.length){c.innerHTML='<div class="w-empty"><span class="we-ico">🎟️</span>No saved events yet.</div>';return}
+  c.innerHTML=wishlist.map(e=>`
+    <div class="witem">
+      <img src="${e.img}" alt="" onerror="this.style.display='none'"/>
+      <div class="witem-info"><div class="witem-name">${e.title}</div><div class="witem-meta">${e.date} · ${e.venue}</div></div>
+      <button class="witem-x" onclick="toggleWish(${e.id})">✕</button>
+    </div>`).join('');
+}
+
+// ── RENDER EVENTS ──
+function renderGrid(list){
+  const g=document.getElementById('evGrid');
+  if(!list.length){g.innerHTML='<div style="grid-column:1/-1;text-align:center;padding:4rem;color:var(--muted2)"><div style="font-size:3rem;margin-bottom:1rem">🔍</div><div>No events found.</div></div>';return}
+  g.innerHTML=list.map(e=>{
+    const pct=Math.round(e.filled/e.seats*100);
+    const fc=pct<50?'slo':pct<80?'smid':'shi';
+    const isFull=pct>=100;
+    const isW=wishlist.some(w=>w.id===e.id);
+    const badges=[];
+    if(e.badge==='hot')badges.push('<span class="ebadge b-hot">🔥 HOT</span>');
+    if(e.badge==='new')badges.push('<span class="ebadge b-new">✨ NEW</span>');
+    if(e.badge==='trending')badges.push('<span class="ebadge b-trend">📈 TRENDING</span>');
+    if(isFull)badges.push('<span class="ebadge b-sold">SOLD OUT</span>');
+    return`
+    <div class="ecard">
+      <div class="ecard-thumb">
+        <img src="${e.img}" alt="${e.title}" loading="lazy" onerror="this.src='https://images.unsplash.com/photo-1492684223066-81342ee5ff30?w=400&q=80'"/>
+        <div class="ecard-thumb-overlay"></div>
+        <div class="ecard-badges">${badges.join('')}</div>
+        <button class="wish-btn ${isW?'saved':''}" id="wb${e.id}" onclick="event.stopPropagation();toggleWish(${e.id})">${isW?'❤️':'♡'}</button>
+        <div class="ctdown">⏳ ${cdText(e.ts)}</div>
+      </div>
+      <div class="ebody">
+        <div class="ecat">${e.cat}</div>
+        <div class="etitle">${e.title}</div>
+        <div class="stars-row">${'⭐'.repeat(Math.round(e.rating))}<span class="rc">${e.rating} (${e.reviews})</span></div>
+        <div class="emeta">
+          <div class="emi">📅 ${e.date} · ⏰ ${e.time}</div>
+          <div class="emi">📍 ${e.venue}</div>
+          <div class="emi">🪑 ${e.seats-e.filled} seats left</div>
+        </div>
+        <div class="sbar"><div class="sfill ${fc}" style="width:${pct}%"></div></div>
+        <div class="stxt">${pct}% filled</div>
+        <div class="efooter">
+          <div class="eprice ${e.price===0?'pfree':'ppaid'}">${e.price===0?'FREE':'₹'+e.price.toLocaleString()}</div>
+          <div class="ebtns">
+            <button class="btn-share-ev" onclick="event.stopPropagation();shareEvCard('${e.title}')">🔗</button>
+            <button class="btn-reg" onclick="openModal(${e.id})" ${isFull?'disabled':''}>
+  ${isFull?'Sold Out':'Register →'}
+</button>
+          </div>
+        </div>
+      </div>
+    </div>`;
+  }).join('');
+}
+
+function shareEvCard(title){
+  navigator.clipboard.writeText(window.location.href).then(()=>showToast(`🔗 Link for "${title}" copied!`));
+}
+
+// ── SURPRISE ──
+function surpriseMe(){
+  const e=EVENTS[Math.floor(Math.random()*EVENTS.length)];
+  openModal(e);showToast('🎲 Random event picked for you!');
+}
+
+// ── IPL ──
+function buildMatchTabs(){
+  const el=document.getElementById('matchTabs');
+  el.innerHTML=IPL_MATCHES.map((m,i)=>`
+    <div class="mtab ${i===0?'active':''}" onclick="selectMatch(${m.id},this)">
+      <div class="teams">${m.emoji1} ${m.short1} vs ${m.short2} ${m.emoji2}</div>
+      <div class="mdate">📅 ${m.date} · ${m.time}</div>
+      <div class="mvenue">📍 ${m.venue}</div>
+    </div>`).join('');
+}
+
+function selectMatch(id,el){
+  selMatch=IPL_MATCHES.find(m=>m.id===id);selStand=null;
+  document.querySelectorAll('.mtab').forEach(t=>t.classList.remove('active'));
+  if(el)el.classList.add('active');
+  document.getElementById('groundTitle').textContent=`🏟️ ${selMatch.venue.toUpperCase()} — SELECT YOUR STAND`;
+  document.querySelectorAll('.stand-seg').forEach(s=>s.classList.remove('selected'));
+  document.getElementById('iplTicketSummary').style.display='none';
+  document.getElementById('selStandInfo').innerHTML=`<div class="ssi-title">👆 Click a stand to select</div><p style="font-size:.8rem;color:var(--muted2);margin-top:.3rem">Tap any colored section to see pricing.</p>`;
+  renderPlayers();
+  showToast(`Match changed: ${selMatch.team1} vs ${selMatch.team2}`);
+}
+
+function selectStand(key){
+  selStand=key;
+  const s=STANDS[key];
+  const pct=Math.round(s.filled/s.total*100);
+  const avail=s.total-s.filled;
+  const status=pct>90?'🔴 Almost Full':pct>60?'🟡 Filling Fast':'🟢 Available';
+  document.querySelectorAll('.stand-seg').forEach(el=>el.classList.remove('selected'));
+  document.getElementById('stand-'+key).classList.add('selected');
+  document.getElementById('selStandInfo').innerHTML=`
+    <div class="ssi-title">📍 ${s.name}</div>
+    <div class="ssi-row"><span>Type</span><span>${s.type}</span></div>
+    <div class="ssi-row"><span>Price per seat</span><span style="color:var(--ipl-gold);font-weight:700">₹${s.price.toLocaleString()}</span></div>
+    <div class="ssi-row"><span>Availability</span><span>${status}</span></div>
+    <div class="ssi-row"><span>Seats left</span><span>${avail.toLocaleString()} / ${s.total.toLocaleString()}</span></div>
+    <div style="height:6px;background:var(--border2);border-radius:3px;overflow:hidden;margin:.6rem 0">
+      <div style="height:100%;width:${pct}%;background:${pct>90?'var(--accent)':pct>60?'var(--gold)':'var(--green)'};border-radius:3px"></div>
+    </div>
+    <button class="btn-book-stand" onclick="showIPLSummary()">🎟️ Select This Stand</button>`;
+  showToast(`Stand selected: ${s.name}`);
+}
+
+function showIPLSummary(){
+  if(!selStand){showToast('Please select a stand first');return}
+  const s=STANDS[selStand];iplQty=1;
+  document.getElementById('tsMatch').textContent=`${selMatch.team1} vs ${selMatch.team2}`;
+  document.getElementById('tsStand').textContent=s.name;
+  document.getElementById('tsDate').textContent=`${selMatch.date} · ${selMatch.time}`;
+  document.getElementById('tsVenue').textContent=selMatch.venue;
+  document.getElementById('qtyVal').textContent=iplQty;
+  document.getElementById('tsTotal').textContent=`₹${(s.price*iplQty).toLocaleString()}`;
+  document.getElementById('iplTicketSummary').style.display='block';
+  document.getElementById('iplTicketSummary').scrollIntoView({behavior:'smooth',block:'center'});
+}
+
+function changeQty(d){
+  iplQty=Math.max(1,Math.min(10,iplQty+d));
+  document.getElementById('qtyVal').textContent=iplQty;
+  if(selStand)document.getElementById('tsTotal').textContent=`₹${(STANDS[selStand].price*iplQty).toLocaleString()}`;
+}
+
+function openIPLModal(){
+  if(!selStand){showToast('Please select a stand');return}
+  isIPLModal=true;
+  const s=STANDS[selStand];
+  selEvent={title:`${selMatch.team1} vs ${selMatch.team2}`,cat:'IPL Cricket',date:selMatch.date,ts:'2026-05-03',time:selMatch.time,venue:selMatch.venue,price:s.price};
+  selTktPrice=s.price;selTktType=s.name;
+  document.getElementById('mTitle').textContent='🏏 IPL Ticket Booking';
+  document.getElementById('mSub').textContent=`${selMatch.team1} vs ${selMatch.team2} · ${selMatch.date}`;
+  document.getElementById('pG').textContent=`₹${s.price.toLocaleString()}`;
+  document.getElementById('pV').textContent=`₹${(s.price*1.5).toLocaleString()} (Club)`;
+  document.getElementById('pGr').textContent=`₹${(s.price*iplQty).toLocaleString()} (${iplQty} seats)`;
+  openModalBase();
+}
+
+function renderPlayers(){
+  const m=selMatch;
+  document.getElementById('playersTitle').textContent=`🏏 ${m.team1} vs ${m.team2} — PLAYERS`;
+  document.getElementById('teamsRow').innerHTML=`
+    <div class="team-block">
+      <div class="team-header">
+        <div class="team-logo" style="background:${m.color1}20;border:2px solid ${m.color1}">${m.emoji1}</div>
+        <div><div class="team-name" style="color:${m.color1}">${m.team1}</div><div class="team-short">${m.short1}</div></div>
+      </div>
+      <div class="players-grid">
+        ${m.players1.map(p=>`
+          <div class="player-card ${p.captain?'captain':''}">
+            <div class="player-avatar">
+              <img src="${p.img}" alt="${p.name}" onerror="this.parentNode.textContent='🏏'"/>
+            </div>
+            <div class="player-name">${p.name.split(' ')[0]}<br>${p.name.split(' ').slice(1).join(' ')}</div>
+            <div class="player-role-badge rb-${p.rb}">${p.role}</div>
+          </div>`).join('')}
+      </div>
+    </div>
+    <div class="team-block">
+      <div class="team-header">
+        <div class="team-logo" style="background:${m.color2}20;border:2px solid ${m.color2}">${m.emoji2}</div>
+        <div><div class="team-name" style="color:${m.color2}">${m.team2}</div><div class="team-short">${m.short2}</div></div>
+      </div>
+      <div class="players-grid">
+        ${m.players2.map(p=>`
+          <div class="player-card ${p.captain?'captain':''}">
+            <div class="player-avatar">
+              <img src="${p.img}" alt="${p.name}" onerror="this.parentNode.textContent='🏏'"/>
+            </div>
+            <div class="player-name">${p.name.split(' ')[0]}<br>${p.name.split(' ').slice(1).join(' ')}</div>
+            <div class="player-role-badge rb-${p.rb}">${p.role}</div>
+          </div>`).join('')}
+      </div>
+    </div>`;
+}
+
+// ── ARTISTS ──
+(function(){
+  document.getElementById('artistsRow').innerHTML=ARTISTS.map(a=>`
+    <div class="artist-card">
+      <div class="a-ava"><img src="${a.img}" alt="${a.name}" onerror="this.parentNode.textContent='${a.emoji}'"/></div>
+      <div class="a-name">${a.name}</div>
+      <div class="a-role">${a.role}</div>
+    </div>`).join('');
+})();
+
+// ── GALLERY ──
+(function(){
+  document.getElementById('galleryGrid').innerHTML=GALLERY.map(src=>`
+    <div class="gitem" onclick="openLB('${src}')">
+      <img src="${src}" alt="Gallery" loading="lazy"/>
+      <div class="gitem-overlay">🔍</div>
+    </div>`).join('');
+})();
+
+// ── LIGHTBOX ──
+function openLB(src){document.getElementById('lbImg').src=src;document.getElementById('lightbox').classList.add('open')}
+function closeLB(){document.getElementById('lightbox').classList.remove('open')}
+
+// ── REVIEWS ──
+(function(){
+  const reviews=[
+    {name:'Arjun S.',stars:5,date:'Apr 2026',text:'Absolutely electric atmosphere! Battle of the Bands was mind-blowing.'},
+    {name:'Priya R.',stars:5,date:'Mar 2026',text:'The Anime Convention was the best event in years. Super organized!'},
+    {name:'Dev K.',stars:4,date:'Mar 2026',text:'BGMI Championship was intense. Great venue, smooth registration.'},
+    {name:'Meera T.',stars:5,date:'Feb 2026',text:'Open Mic Night was so wholesome. EntertainX made it a breeze!'},
+  ];
+  document.getElementById('reviewsWrap').innerHTML=reviews.map(r=>`
+    <div class="rv">
+      <div class="rv-head"><div class="rv-name">${r.name}</div><div class="rv-date">${r.date}</div></div>
+      <div class="rv-stars">${'⭐'.repeat(r.stars)}</div>
+      <div class="rv-text">${r.text}</div>
+    </div>`).join('');
+})();
+
+// ── NOTIFY ──
+function subscribeNotify(){
+  const e=document.getElementById('notifyEmail').value.trim();
+  if(!e||!/^[^\s@]+@[^\s@]+\.[^\s@]+$/.test(e)){showToast('❌ Please enter a valid email');return}
+  document.getElementById('notifyEmail').value='';
+  showToast('🔔 Subscribed! We\'ll notify you.');
+}
+
+// ── MODAL ──
+function openModal(evOrId){
+  // Accept either an id (number) or a full event object
+  const ev = (typeof evOrId === 'number')
+    ? EVENTS.find(e => e.id === evOrId)
+    : evOrId;
+  if(!ev) return;
+
+  isIPLModal=false;
+  selEvent=ev;
+  selTktPrice=ev.price===0?0:TICKET_PRICES.general;
+  selTktType='General Admission';
+  document.getElementById('mTitle').textContent=ev.title;
+  document.getElementById('mSub').textContent=`${ev.cat} · ${ev.date} · ${ev.venue}`;
+  document.getElementById('pG').textContent=ev.price===0?'FREE':'₹'+TICKET_PRICES.general.toLocaleString();
+  document.getElementById('pV').textContent=ev.price===0?'FREE':'₹'+TICKET_PRICES.vip.toLocaleString();
+  document.getElementById('pGr').textContent=ev.price===0?'FREE':'₹'+TICKET_PRICES.group.toLocaleString();
+  openModalBase();
+}
+
+function openModalBase(){
+  curStep=1;
+  ['fn','ln','em','ph','cNum','cExp','cCvv','cName'].forEach(id=>{const el=document.getElementById(id);if(el){el.value='';el.classList.remove('err')}});
+  document.querySelectorAll('.em-err').forEach(e=>e.classList.remove('show'));
+  document.querySelectorAll('.t-opt').forEach(t=>t.classList.remove('sel'));
+  document.getElementById('tG').classList.add('sel');
+  document.querySelector('#tG input').checked=true;
+  document.getElementById('successSc').classList.remove('show');
+  document.getElementById('mStepsBar').style.display='flex';
+  document.getElementById('mFoot').style.display='flex';
+  document.querySelector('.mbody').style.padding='1.8rem';
+  updateStepUI();
+  document.getElementById('overlay').classList.add('open');
+  document.body.style.overflow='hidden';
+}
+
+function closeModal(){document.getElementById('overlay').classList.remove('open');document.body.style.overflow=''}
+function closeModalOuter(e){if(e.target===document.getElementById('overlay'))closeModal()}
+
+function updateStepUI(){
+  for(let i=1;i<=4;i++){
+    document.getElementById('mfs'+i).classList.toggle('active',i===curStep);
+    const si=document.getElementById('msi'+i);
+    si.classList.remove('active','done');
+    if(i===curStep)si.classList.add('active');
+    else if(i<curStep)si.classList.add('done');
+  }
+  document.getElementById('bBack').style.visibility=curStep===1?'hidden':'visible';
+  document.getElementById('bNext').textContent=curStep===4?'✅ Complete Registration':'Continue →';
+}
+
+function showE(eid,fid){document.getElementById(eid).classList.add('show');if(fid)document.getElementById(fid).classList.add('err')}
+function hideE(eid,fid){document.getElementById(eid).classList.remove('show');if(fid)document.getElementById(fid).classList.remove('err')}
+
+function validateS1(){
+  let ok=true;
+  [['fn','eFn'],['ln','eLn'],['ph','ePh']].forEach(([f,e])=>{if(!document.getElementById(f).value.trim()){showE(e,f);ok=false}else hideE(e,f)});
+  const e=document.getElementById('em').value.trim();
+  if(!e||!/^[^\s@]+@[^\s@]+\.[^\s@]+$/.test(e)){showE('eEm','em');ok=false}else hideE('eEm','em');
+  return ok;
+}
+function validateS3(){
+  let ok=true;
+  if(document.getElementById('cNum').value.replace(/\s/g,'').length<13){showE('eCn','cNum');ok=false}else hideE('eCn','cNum');
+  if(document.getElementById('cExp').value.length<5){showE('eExp','cExp');ok=false}else hideE('eExp','cExp');
+  if(document.getElementById('cCvv').value.length<3){showE('eCvv','cCvv');ok=false}else hideE('eCvv','cCvv');
+  if(!document.getElementById('cName').value.trim()){showE('eCn2','cName');ok=false}else hideE('eCn2','cName');
+  return ok;
+}
+
+function nextStep(){
+  if(curStep===1&&!validateS1())return;
+  if(curStep===3&&!validateS3())return;
+  if(curStep===2)fillSum();
+  if(curStep===3)fillConf();
+  if(curStep===4){completeReg();return}
+  curStep++;updateStepUI();
+  document.querySelector('.modal').scrollTo(0,0);
+}
+function prevStep(){if(curStep>1){curStep--;updateStepUI()}}
+
+function fillSum(){
+  const qty=+document.getElementById('tQty').value;
+  const price=selEvent.price===0?0:selTktPrice*qty;
+  document.getElementById('seName').textContent=selEvent.title;
+  document.getElementById('seT').textContent=selTktType;
+  document.getElementById('seQ').textContent=qty;
+  document.getElementById('seN').textContent=document.getElementById('fn').value+' '+document.getElementById('ln').value;
+  document.getElementById('seP').textContent=price===0?'FREE':'₹'+price.toLocaleString();
+}
+function fillConf(){
+  const qty=+document.getElementById('tQty').value;
+  const price=selEvent.price===0?0:selTktPrice*qty;
+  document.getElementById('cfEv').textContent=selEvent.title;
+  document.getElementById('cfNm').textContent=document.getElementById('fn').value+' '+document.getElementById('ln').value;
+  document.getElementById('cfEm').textContent=document.getElementById('em').value;
+  document.getElementById('cfPh').textContent=document.getElementById('ph').value;
+  document.getElementById('cfTk').textContent=selTktType;
+  document.getElementById('cfQt').textContent=qty;
+  document.getElementById('cfTp').textContent=price===0?'FREE':'₹'+price.toLocaleString();
+}
+
+function selTkt(r){
+  document.querySelectorAll('.t-opt').forEach(t=>t.classList.remove('sel'));
+  r.closest('.t-opt').classList.add('sel');
+  selTktPrice=selEvent.price===0?0:TICKET_PRICES[r.value];
+  selTktType=TICKET_NAMES[r.value];
+}
+
+function applyPromo(){
+  const c=document.getElementById('promo').value.trim().toUpperCase();
+  if(['ENTER10','SAVE10','VIBE20','IPL2026'].includes(c))showToast('✅ Promo applied! Discount activated.');
+  else showToast('❌ Invalid promo code');
+}
+function fmtCard(el){let v=el.value.replace(/\D/g,'').slice(0,16);el.value=v.replace(/(.{4})/g,'$1 ').trim()}
+function fmtExp(el){let v=el.value.replace(/\D/g,'');if(v.length>=2)v=v.slice(0,2)+'/'+v.slice(2,4);el.value=v}
+
+document.querySelectorAll('.pi').forEach(p=>{p.addEventListener('click',function(){document.querySelectorAll('.pi').forEach(x=>x.classList.remove('sel'));this.classList.add('sel')})});
+
+function completeReg(){
+  const id='TKT-'+Math.floor(100000+Math.random()*900000);
+  document.getElementById('tidVal').textContent=id;
+
+  // Save to registered events for profile
+  regEvents.push({
+    title: selEvent.title,
+    date: selEvent.date,
+    venue: selEvent.venue,
+    ticketType: selTktType,
+    ticketId: id,
+    emoji: '🎟️'
+  });
+  addActivity('🎟️ Registered: ' + selEvent.title);
+  updateProfile();
+
+  document.getElementById('mStepsBar').style.display='none';
+  document.getElementById('mFoot').style.display='none';
+  document.querySelectorAll('.mfs').forEach(s=>s.classList.remove('active'));
+  document.querySelector('.mbody').style.padding='0';
+  document.getElementById('successSc').classList.add('show');
+  document.querySelector('.modal').scrollTo(0,0);
+  launchConfetti();
+  showToast('🎉 Registration complete!');
+}
+
+ 
+function addToCal(){
+  if(!selEvent)return;
+  const t=encodeURIComponent(selEvent.title),d=selEvent.ts.replace(/-/g,'');
+  window.open(`https://calendar.google.com/calendar/render?action=TEMPLATE&text=${t}&dates=${d}/${d}`,'_blank');
+  showToast('📅 Opening Google Calendar!');
+}
+function shareEv(){
+  navigator.clipboard.writeText(window.location.href).then(()=>showToast('🔗 Link copied to clipboard!'));
+}
+
+// ── CONFETTI ──
+function launchConfetti(){
+  const cols=['#ff2255','#fbbf24','#00d4ff','#7c3aed','#10b981','#fff','#FFD700'];
+  for(let i=0;i<100;i++){
+    const el=document.createElement('div');el.className='cp';
+    el.style.cssText=`left:${Math.random()*100}vw;background:${cols[Math.floor(Math.random()*cols.length)]};width:${5+Math.random()*8}px;height:${5+Math.random()*8}px;border-radius:${Math.random()>.5?'50%':'2px'};animation-duration:${2+Math.random()*2}s;animation-delay:${Math.random()*.6}s`;
+    document.body.appendChild(el);el.addEventListener('animationend',()=>el.remove());
+  }
+}
+
+// ── INIT ──
+renderGrid(EVENTS.slice(0,visibleCount));
+document.getElementById('loadWrap').style.display=EVENTS.length>visibleCount?'block':'none';
+buildMatchTabs();renderPlayers();
+// ── PROFILE SYSTEM ──
+let regEvents = [];
+let iplBookings = [];
+let activityLog = ['🎉 Welcome to EntertainX!'];
+
+function openProfile() {
+  updateProfile();
+  document.getElementById('PRO').classList.add('on');
+  document.body.style.overflow = 'hidden';
+}
+function closeProf() {
+  document.getElementById('PRO').classList.remove('on');
+  document.body.style.overflow = '';
+}
+function closeProfOut(e) {
+  if (e.target === document.getElementById('PRO')) closeProf();
+}
+
+function addActivity(msg) {
+  activityLog.push(msg);
+}
+
+function updateProfile() {
+  // Stats
+  document.getElementById('PS1').textContent = regEvents.length;
+  document.getElementById('PS2').textContent = wishlist.length;
+  document.getElementById('PS3').textContent = iplBookings.length;
+
+  // XP Calculation
+  const xp = regEvents.length * 300 + wishlist.length * 50 + iplBookings.length * 500;
+  const lvl = Math.floor(xp / 1000) + 1;
+  const xpInLevel = xp % 1000;
+  const xpToNext = 1000 - xpInLevel;
+  document.getElementById('XPP').textContent = xp.toLocaleString() + ' XP';
+  document.getElementById('PLV').textContent = 'Lv.' + lvl;
+  document.getElementById('XPN').textContent = xpToNext + ' XP to Level ' + (lvl + 1) + ' · ' + getLevelTitle(lvl);
+  document.getElementById('XPF').style.width = Math.min((xpInLevel / 10), 100) + '%';
+
+  // Registered Events
+  const regList = document.getElementById('REG_LIST');
+  if (!regEvents.length) {
+    regList.innerHTML = '<div style="text-align:center;color:var(--muted);font-size:.82rem;padding:1.5rem 0">No registrations yet.<br>Register for an event to see it here!</div>';
+  } else {
+    regList.innerHTML = regEvents.map(e => `
+      <div class="reg-item">
+        <div class="reg-img-fallback">${e.emoji || '🎟️'}</div>
+        <div class="reg-info">
+          <div class="reg-name">${e.title}</div>
+          <div class="reg-meta">${e.date} · ${e.venue} · ${e.ticketType}</div>
+          <div class="reg-tid">${e.ticketId}</div>
+        </div>
+        <span class="reg-status st-upcoming">Upcoming</span>
+      </div>`).join('');
+  }
+
+  // IPL Tickets
+  const iplList = document.getElementById('IPL_TKT_LIST');
+  if (!iplBookings.length) {
+    iplList.innerHTML = '<div style="text-align:center;color:var(--muted);font-size:.82rem;padding:1rem 0">No IPL tickets yet. Book a match!</div>';
+  } else {
+    iplList.innerHTML = iplBookings.map(t => `
+      <div class="ipl-ticket-card">
+        <div class="ipl-ticket-logo">🏏</div>
+        <div class="ipl-ticket-info">
+          <div class="ipl-ticket-match">${t.match}</div>
+          <div class="ipl-ticket-meta">${t.date} · ${t.stand} · ${t.qty} seat(s)</div>
+          <div class="ipl-ticket-id">${t.ticketId}</div>
+        </div>
+        <span class="reg-status st-upcoming">Booked</span>
+      </div>`).join('');
+  }
+
+  // Wishlist preview
+  const profWish = document.getElementById('PROF_WISH');
+  if (!wishlist.length) {
+    profWish.innerHTML = '<div style="text-align:center;color:var(--muted);font-size:.82rem;padding:1rem 0">No saved events yet.</div>';
+  } else {
+    profWish.innerHTML = wishlist.slice(0, 3).map(e => `
+      <div class="reg-item">
+        <div class="reg-img-fallback">${e.emoji || '❤️'}</div>
+        <div class="reg-info">
+          <div class="reg-name">${e.title}</div>
+          <div class="reg-meta">${e.date} · ${e.venue}</div>
+        </div>
+        <span class="reg-status" style="background:rgba(255,34,85,.15);color:var(--accent)">Saved</span>
+      </div>`).join('') + (wishlist.length > 3 ? `<div style="text-align:center;font-size:.75rem;color:var(--muted);margin-top:.5rem">+${wishlist.length - 3} more saved</div>` : '');
+  }
+
+  // Activity Log
+  document.getElementById('ACT_LOG').innerHTML = activityLog.slice(-6).reverse().map(a => `• ${a}`).join('<br>');
+}
+
+function getLevelTitle(lvl) {
+  const titles = ['Newcomer', 'Explorer', 'Fan', 'Enthusiast', 'Gold Member', 'VIP', 'Legend'];
+  return titles[Math.min(lvl - 1, titles.length - 1)];
+}
+
+function exportTickets() {
+  if (!regEvents.length && !iplBookings.length) {
+    showToast('No tickets to export yet!');
+    return;
+  }
+  let data = '=== EntertainX Tickets ===\n\n';
+  if (regEvents.length) {
+    data += '--- EVENT TICKETS ---\n';
+    data += regEvents.map(e => `${e.title} | ${e.date} | ${e.venue} | ${e.ticketType} | ${e.ticketId}`).join('\n');
+    data += '\n\n';
+  }
+  if (iplBookings.length) {
+    data += '--- IPL TICKETS ---\n';
+    data += iplBookings.map(t => `${t.match} | ${t.date} | ${t.stand} | ${t.qty} seat(s) | ${t.ticketId}`).join('\n');
+  }
+  const blob = new Blob([data], { type: 'text/plain' });
+  const a = document.createElement('a');
+  a.href = URL.createObjectURL(blob);
+  a.download = 'my-entertainx-tickets.txt';
+  a.click();
+  showToast('📥 Tickets exported successfully!');
+}
+
+function shareProfile() {
+  navigator.clipboard.writeText('Check out EntertainX! ' + window.location.href)
+    .then(() => showToast('🔗 Profile link copied to clipboard!'));
+}
+
+function editProfile() {
+  const name = prompt('Enter your name:', document.getElementById('PNAME').textContent);
+  if (name && name.trim()) {
+    document.getElementById('PNAME').textContent = name.trim();
+    showToast('✅ Profile name updated!');
+    addActivity('✏️ Updated profile name to ' + name.trim());
+  }
+}
+setTimeout(()=>{document.querySelectorAll('.reveal').forEach((el,i)=>{setTimeout(()=>el.classList.add('vis'),i*120)})},200);
+// ── CUSTOM CURSOR ──
+const cur = document.getElementById('cursor');
+const ring = document.getElementById('cursorRing');
+
+document.addEventListener('mousemove', e => {
+  cur.style.left = e.clientX + 'px';
+  cur.style.top = e.clientY + 'px';
+  // Ring follows with slight delay
+  setTimeout(() => {
+    ring.style.left = e.clientX + 'px';
+    ring.style.top = e.clientY + 'px';
+  }, 80);
+});
+
+// Hover effect on interactive elements
+const hoverEls = 'button, a, .tab, .cat-card, .ecard, .mtab, .player-card, .artist-card, .gitem, .qa-card, .wish-btn, .icon-btn, .stand-seg, .qty-btn, .t-opt, .pi';
+document.querySelectorAll(hoverEls).forEach(el => {
+  el.addEventListener('mouseenter', () => {
+    cur.classList.add('hover');
+    ring.classList.add('hover');
+  });
+  el.addEventListener('mouseleave', () => {
+    cur.classList.remove('hover');
+    ring.classList.remove('hover');
+  });
+});
+
+// Click effect
+document.addEventListener('mousedown', () => {
+  cur.classList.add('click');
+  ring.classList.add('click');
+});
+document.addEventListener('mouseup', () => {
+  cur.classList.remove('click');
+  ring.classList.remove('click');
+});
+
+// Hide cursor when it leaves the window
+document.addEventListener('mouseleave', () => {
+  cur.style.opacity = '0';
+  ring.style.opacity = '0';
+});
+document.addEventListener('mouseenter', () => {
+  cur.style.opacity = '1';
+  ring.style.opacity = '.6';
+});
+</script>
+<!-- PROFILE PANEL -->
+<div class="pro-overlay" id="PRO" onclick="closeProfOut(event)">
+  <div class="pp" id="PPP">
+    <div class="pp-head">
+      <div class="pp-left">
+        <div class="pp-avatar" id="PAV">👤<span class="pp-level" id="PLV">Lv.1</span></div>
+        <div class="pp-name" id="PNAME">Gopii</div>
+        <div class="pp-email" id="PEMAIL">gopii@entertainx.com</div>
+      </div>
+      <button class="pp-close" onclick="closeProf()">✕</button>
+    </div>
+    <div class="pp-body">
+
+      <!-- XP BAR -->
+      <div class="xp-section">
+        <div class="xp-top">
+          <span class="xp-label">⚡ XP Progress</span>
+          <span class="xp-pts" id="XPP">0 XP</span>
+        </div>
+        <div class="xp-bar"><div class="xp-fill" id="XPF" style="width:0%"></div></div>
+        <div class="xp-next" id="XPN">Register events to earn XP and level up!</div>
+      </div>
+
+      <!-- STATS -->
+      <div class="pstats">
+        <div class="pstat"><div class="pstat-num" id="PS1">0</div><div class="pstat-lbl">Attended</div></div>
+        <div class="pstat"><div class="pstat-num" id="PS2">0</div><div class="pstat-lbl">Saved</div></div>
+        <div class="pstat"><div class="pstat-num" id="PS3">0</div><div class="pstat-lbl">IPL Tickets</div></div>
+      </div>
+
+      <!-- ACHIEVEMENTS -->
+      <div class="sec-lbl">🏅 Achievements</div>
+      <div class="bdgs-row">
+        <div class="bdg-item">🎵 Music Lover</div>
+        <div class="bdg-item">🏏 Cricket Fan</div>
+        <div class="bdg-item">🎮 Gamer</div>
+        <div class="bdg-item">⭐ Early Bird</div>
+        <div class="bdg-item">🔥 Trendsetter</div>
+        <div class="bdg-item">🎬 Cinephile</div>
+      </div>
+
+      <!-- REGISTERED EVENTS -->
+      <div class="sec-lbl">🎟️ My Registered Events</div>
+      <div class="reg-list" id="REG_LIST">
+        <div style="text-align:center;color:var(--muted);font-size:.82rem;padding:1.5rem 0">
+          No registrations yet.<br>Register for an event to see it here!
+        </div>
+      </div>
+
+      <!-- IPL TICKETS -->
+      <div class="sec-lbl">🏏 My IPL Tickets</div>
+      <div id="IPL_TKT_LIST">
+        <div style="text-align:center;color:var(--muted);font-size:.82rem;padding:1rem 0">
+          No IPL tickets yet. Book a match!
+        </div>
+      </div>
+
+      <!-- WISHLIST PREVIEW -->
+      <div class="sec-lbl" style="margin-top:1.2rem">❤️ Saved Events</div>
+      <div id="PROF_WISH">
+        <div style="text-align:center;color:var(--muted);font-size:.82rem;padding:1rem 0">
+          No saved events yet.
+        </div>
+      </div>
+
+      <!-- QUICK ACTIONS -->
+      <div class="sec-lbl" style="margin-top:1.2rem">⚡ Quick Actions</div>
+      <div class="quick-acts">
+        <div class="qa-card" onclick="document.getElementById('events').scrollIntoView({behavior:'smooth'});closeProf()">
+          <div class="qa-icon">🎟️</div>
+          <div><div class="qa-label">Browse Events</div><div class="qa-sub">Discover new events</div></div>
+        </div>
+        <div class="qa-card" onclick="document.getElementById('ipl').scrollIntoView({behavior:'smooth'});closeProf()">
+          <div class="qa-icon">🏏</div>
+          <div><div class="qa-label">IPL Tickets</div><div class="qa-sub">Book match tickets</div></div>
+        </div>
+        <div class="qa-card" onclick="toggleWishlist();closeProf()">
+          <div class="qa-icon">❤️</div>
+          <div><div class="qa-label">My Wishlist</div><div class="qa-sub">View saved events</div></div>
+        </div>
+        <div class="qa-card" onclick="exportTickets()">
+          <div class="qa-icon">📥</div>
+          <div><div class="qa-label">Export Tickets</div><div class="qa-sub">Download all tickets</div></div>
+        </div>
+        <div class="qa-card" onclick="shareProfile()">
+          <div class="qa-icon">🔗</div>
+          <div><div class="qa-label">Share Profile</div><div class="qa-sub">Invite friends</div></div>
+        </div>
+        <div class="qa-card" onclick="editProfile()">
+          <div class="qa-icon">✏️</div>
+          <div><div class="qa-label">Edit Profile</div><div class="qa-sub">Update your info</div></div>
+        </div>
+      </div>
+
+      <!-- RECENT ACTIVITY -->
+      <div class="sec-lbl">📋 Recent Activity</div>
+      <div class="act-log" id="ACT_LOG">• 🎉 Welcome to EntertainX!</div>
+
+    </div>
+  </div>
+</div>
+</body>
+</html>
