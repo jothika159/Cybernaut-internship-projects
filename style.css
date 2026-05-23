@@ -1,0 +1,246 @@
+body {
+  background: linear-gradient(135deg, #070b2d, #0f172a);
+  font-family: 'Segoe UI', sans-serif;
+  display: flex;
+  justify-content: center;
+  margin-top: 60px;
+  color: white;
+}
+
+
+/* BIGGER CONTAINER */
+.container {
+  width: 650px;   /* increased from 400/500 */
+  padding: 20px;
+}
+
+/* HEADER */
+.header {
+  background: rgba(255,255,255,0.05);
+  padding: 30px;
+  border-radius: 20px;
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+
+  backdrop-filter: blur(15px);
+  box-shadow: 0 10px 40px rgba(0,0,0,0.4);
+
+  /* animation */
+  animation: slideDown 0.6s ease;
+}
+
+@keyframes slideDown {
+  from {
+    opacity: 0;
+    transform: translateY(-30px);
+  }
+  to {
+    opacity: 1;
+    transform: translateY(0);
+  }
+}
+
+/* COUNT CIRCLE */
+.count {
+  background: linear-gradient(135deg, #6c63ff, #9f7aea);
+  padding: 25px;
+  border-radius: 50%;
+  font-weight: bold;
+  font-size: 18px;
+
+  animation: pulse 2s infinite;
+}
+
+@keyframes pulse {
+  0% { transform: scale(1); }
+  50% { transform: scale(1.08); }
+  100% { transform: scale(1); }
+}
+
+/* PROGRESS BAR */
+.progress-bar {
+  width: 300px;
+  height: 8px;
+  background: #222;
+  border-radius: 10px;
+  margin-top: 10px;
+  overflow: hidden;
+}
+
+#progress {
+  height: 100%;
+  width: 0%;
+  background: linear-gradient(90deg, #00f5d4, #6c63ff);
+  border-radius: 10px;
+
+  transition: width 0.5s ease;
+}
+
+/* INPUT */
+.input-section {
+  margin-top: 25px;
+  display: flex;
+  gap: 12px;
+}
+
+input {
+  flex: 1;
+  padding: 14px;
+  border-radius: 12px;
+  border: none;
+  background: #1a1f4a;
+  color: white;
+  font-size: 15px;
+}
+
+button {
+  background: linear-gradient(135deg, #6c63ff, #8b5cf6);
+  border: none;
+  padding: 14px;
+  border-radius: 50%;
+  cursor: pointer;
+  font-size: 20px;
+
+  transition: 0.3s;
+}
+
+button:hover {
+  transform: scale(1.15) rotate(10deg);
+}
+
+/* TASK LIST */
+ul {
+  list-style: none;
+  padding: 0;
+  margin-top: 25px;
+}
+
+li {
+  background: #1a1f4a;
+  padding: 15px;
+  margin: 12px 0;
+  border-radius: 12px;
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+
+  animation: fadeSlide 0.4s ease;
+}
+
+@keyframes fadeSlide {
+  from {
+    opacity: 0;
+    transform: translateY(15px);
+  }
+  to {
+    opacity: 1;
+    transform: translateY(0);
+  }
+}
+
+/* HOVER EFFECT */
+li:hover {
+  transform: scale(1.03);
+  transition: 0.3s;
+}
+
+/* COMPLETED */
+.completed {
+  text-decoration: line-through;
+  color: #888;
+
+  animation: strike 0.3s ease;
+}
+
+@keyframes strike {
+  from { opacity: 0.5; }
+  to { opacity: 1; }
+}
+
+/* BUTTONS */
+.actions button {
+  margin-left: 8px;
+  padding: 6px 10px;
+  border-radius: 6px;
+}
+
+.delete {
+  background: red;
+}
+
+.check {
+  background: green;
+}
+
+
+
+/* FILTER SECTION */
+.filter-buttons{
+  display: flex;
+  justify-content: center;
+  align-items: center;
+  gap: 14px;
+  margin-top: 28px;
+  margin-bottom: 18px;
+  padding: 14px 18px;
+
+  background: rgba(255,255,255,0.04);
+  border-radius: 18px;
+  backdrop-filter: blur(10px);
+
+  box-shadow: 0 8px 25px rgba(0,0,0,0.25);
+}
+
+/* BUTTONS */
+.filter-buttons button{
+  min-width: 130px;
+  padding: 12px 20px;
+  border: none;
+  border-radius: 14px;
+
+  background: linear-gradient(135deg,#6c63ff,#8b5cf6);
+  color: white;
+
+  font-size: 16px;
+  font-weight: 600;
+  letter-spacing: 0.3px;
+
+  cursor: pointer;
+  transition: all 0.3s ease;
+
+  box-shadow: 0 8px 18px rgba(108,99,255,0.30);
+}
+
+/* HOVER */
+.filter-buttons button:hover{
+  transform: translateY(-3px);
+  box-shadow: 0 14px 24px rgba(108,99,255,0.45);
+}
+
+/* CLICK */
+.filter-buttons button:active{
+  transform: scale(0.96);
+}
+
+/* ACTIVE FILTER */
+.filter-buttons button.active{
+  background: linear-gradient(135deg,#00f5d4,#3b82f6);
+  box-shadow: 0 12px 25px rgba(0,245,212,0.35);
+}
+
+/* MOBILE */
+@media (max-width: 768px){
+  .filter-buttons{
+    flex-wrap: wrap;
+    gap: 10px;
+    padding: 12px;
+  }
+
+  .filter-buttons button{
+    min-width: 110px;
+    font-size: 14px;
+    padding: 10px 16px;
+  }
+}
+
